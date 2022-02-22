@@ -1,2 +1,2 @@
-# poles_in_cosmos
+# Poles in cosmos
 Characterizing orbital poles in Cosmological simulations
