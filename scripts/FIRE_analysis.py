@@ -1,14 +1,13 @@
 """
-Scripts to analyze FIRE simulatios
+Scripts to analyze orbital poles & plot density maps in FIRE simulations
 author: jngaravitoc, Emily Cunningham
 
-02/2022 -
+02/2022 - 
 
 TODO:
 -----
-- Implement parallelization
-- Implement arg parser
-- Add routine to plot densities
+- Check routine to plot densities
+- Move plotting routines to nba
 
 """
 
@@ -27,6 +26,8 @@ from astropy import units as u
 #import gala.potential as gp
 #from gala.units import galactic, solarsystem, dimensionless
 #from gala.potential import scf
+
+from datetime import datetime
 
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
@@ -78,7 +79,7 @@ def cartessian_projection(pos, figname):
     plt.close()
     return 0
 
-def mollweide_projection(l, b, l2, b2, rmin, rmax, bmin, bmax, nside,  smooth=5, **kwargs):
+def mollweide_projection(l, b, l2, b2, title, bmin, bmax, nside,  smooth=5, **kwargs):
 
     """
     Makes mollweide plot using healpix
@@ -107,7 +108,7 @@ def mollweide_projection(l, b, l2, b2, rmin, rmax, bmin, bmax, nside,  smooth=5,
     coord=["G"],
     graticule=True,
     graticule_labels=True,
-    rot=(120, 0, 0),
+    rot=(180, 0, 0),
     unit=" ",
     xlabel="Galactic Longitude (l) ",
     ylabel="Galactic Latitude (b)",
@@ -116,7 +117,7 @@ def mollweide_projection(l, b, l2, b2, rmin, rmax, bmin, bmax, nside,  smooth=5,
     max=bmax,
     latitude_grid_spacing=45,
     projection_type="mollweide",
-    title=" {}-{} kpc".format(int(rmin),int(rmax)),)
+    title=title,)
 	
     #newprojplot(theta=np.radians(90-(b2)), phi=np.radians(l2-120), marker="*", color="r", markersize=5 )
     #newprojplot(theta=np.radians(90-(b2[0])), phi=np.radians(l2[0]-120), marker="*", color="r", markersize=5 )
@@ -131,7 +132,10 @@ def mollweide_projection(l, b, l2, b2, rmin, rmax, bmin, bmax, nside,  smooth=5,
 
 
 def rotate_halo(pos, vel):
-
+    """
+    Rotation of principal axis for m12b and peri -> snap 385 
+    Numbers from Emily Cunningham
+    """
     #
     halo_pos=np.array([32.908375,16.943731,8.137191])
     halo_r=(np.sum(halo_pos**2)**0.5)
@@ -144,7 +148,6 @@ def rotate_halo(pos, vel):
     y_ang=np.arcsin(halo_pos[1]/halo_rp)
 
     ##Note here that x_ang=y_ang=theta; rotation in x-y plane. Rotate in plane and then rotate Satellite down.
-    #print(np.arccos(halo_pos[0]/halo_rp))
     print("rotating halo with angles: ", x_ang, y_ang, z_ang)
     
     pos_part_rot=ut.coordinate.get_coordinates_rotated(pos, rotation_angles=[x_ang, 0., z_ang])
@@ -162,15 +165,13 @@ def rotate_halo(pos, vel):
     sat_pos_rot=ut.coordinate.get_coordinates_rotated(sat_pos, rotation_angles=[x_ang, 0., z_ang])
     sat_vel_rot=ut.coordinate.get_coordinates_rotated(sat_vel, rotation_angles=[x_ang, 0., z_ang])
     print("-> Satellite position and velocity", sat_pos, sat_vel)
-
-
     return pos_part_rot, vel_part_rot # halo_pos_rot, sat_pos_rot, sat_vel_rot
 
 
 ## Orbital poles routines
 
 class FIRE_analysis(object):
-    def __init__(self, sim, rmin, rmax, part_type, analysis_type,  outpath, figure_name, **kwargs):
+    def __init__(self, sim, rmin, rmax, part_type, analysis_type, outpath, figure_name, remove_subs, **kwargs):
         """
             sim: str
                 currently only tested with: m21b, m12c, m12f, m12i, m12w for the
@@ -205,20 +206,17 @@ class FIRE_analysis(object):
         self.rmin = rmin
         self.rmax = rmax
         self.part_type = part_type
-        #self.snap_number = snap_number
         self.outpath = outpath #"../plots/{}/".format(sim)
         self.analysis_type = analysis_type
         self.figure_name = figure_name
 
         self.simulation_directory = '/mnt/ceph/users/firesims/fire2/metaldiff/{}_res7100'.format(self.sim)
 
-        # kwargs
+        self.remove_subs = remove_subs
 
-        if 'remove_subs' in kwargs.keys():
-            self.remove_subs = kwargs['remove_subs']
-        else:
-            self.remove_subs = False
-        # Substructure
+         
+        self.bmin = kwargs['bmin'] 
+        self.bmax = kwargs['bmax']
 
         if self.remove_subs == True :
             print("-> Removing particles from the massive subhalo using Emily Cunninghan's SCF IDs")
@@ -256,8 +254,9 @@ class FIRE_analysis(object):
                 stars_kinematics = nba.kinematics.Kinematics(pos_stars, vel_stars)
                 stars_l_host, stars_b_host = stars_kinematics.pos_cartesian_to_galactic()
                 stars_figname = self.outpath + "{}_".format(self.sim) + self.figure_name +  "_stars_{:03d}.png".format(snap)
-                mollweide_projection(stars_l_host*180/np.pi, stars_b_host*180/np.pi, [0], [0], self.rmin, self.rmax,
-                                     bmin=100, bmax=1000, nside=40, figname=stars_figname)
+                title_stars = "{} star {}-{} kpc".format(self.sim, self.bmin,  self.bmax)
+                mollweide_projection(stars_l_host*180/np.pi, stars_b_host*180/np.pi, [0], [0], 
+                                     title=title_stars, bmin=self.bmin, bmax=self.bmax, nside=40, figname=stars_figname)
         
     
         # ** dark matter ** 
@@ -292,8 +291,9 @@ class FIRE_analysis(object):
                 dm_m12b_kinematics_2 = nba.kinematics.Kinematics(pos_dm, vel_dm)
                 dm_l_host, dm_b_host = dm_m12b_kinematics_2.pos_cartesian_to_galactic()
                 dm_figname = self.outpath + "{}_".format(self.sim) + self.figure_name + "_{:03d}.png".format(snap)
+                title_dark = "{} dark {}-{} kpc".format(self.sim, self.bmin,  self.bmax)
                 mollweide_projection(dm_l_host*180/np.pi, dm_b_host*180/np.pi,
-                    [0],[0], self.rmin, self.rmax, bmin=10, bmax=1500,
+                    [0],[0], title=title_dark ,bmin=self.bmin,  bmax=self.bmax,
                     nside=40, figname=dm_figname)
         return 0
     def callback(self, result):
@@ -304,8 +304,14 @@ class FIRE_analysis(object):
     def __call__(self, task):
         return self.analyze_snapshot(task)
 
-def main(pool, sim, rmin, rmax, part_type, analysis_type, outpath, figure_name):
-    worker = FIRE_analysis(sim, rmin, rmax, part_type, analysis_type, outpath, figure_name)
+def main(pool, sim, rmin, rmax, part_type, analysis_type, outpath, figure_name,  remove_subs, **kwargs):
+   
+
+    bmin = kwargs['bmin']
+    bmax = kwargs['bmax']
+
+    worker = FIRE_analysis(sim, rmin, rmax, part_type, analysis_type, outpath, figure_name, remove_subs, bmin=bmin, bmax=bmax)
+
     tasks = np.arange(snap_init, snap_final, delta_snap)
 
     for r in pool.map(worker, tasks, callback=worker.callback):
@@ -313,23 +319,37 @@ def main(pool, sim, rmin, rmax, part_type, analysis_type, outpath, figure_name):
 
     pool.close()
 
+def write_params(params):
+    """
+    """
+    print("-> Writing parameter file in ")
+    
+    filename = params.figure_name
+    dt = datetime.now()    
+    outpath = params.outpath
+    f = open(outpath+"parameter_file_" + filename + ".txt", "w")
+    f.write(str(dt) + "+ \n")
+    f.write(str(params))
+    f.close()
+
+
+
 
 if __name__ == "__main__":
     #snap_final = 600
     #snap_init = 425
     #snap_final = 601
-    delta_snap = 1
     #figure_name_dark = 'OP_dark_particles_shells_no_rot_no_substructure_'
     #figure_name_stars = 'OP_stars_particles_within_50kpc_'
     #outpath = "../plots/{}/".format(sim)
     #sim = 'm12b'
-
     #rmin = 50
     #rmax = 500
-    part_type = ['dark']
     #snap_number = 385
     #figure_name = "OP_dark_particles_shells_no_rot_no_substructure_"
-    outpath = "./" #./plots/{}/".format(sim)
+    #outpath = "./" #./plots/{}/".format(sim)
+
+    delta_snap = 1
     analysis_type = "orbital_poles"
 
     #m12b_OP = FIRE_analysis(sim, rmin, rmax, part_type, snap_number, analysis_type, outpath, figure_name)
@@ -343,21 +363,31 @@ if __name__ == "__main__":
     parser.add_argument("--ncores", dest="n_cores", default=1,
                        type=int, help="Number of processes (uses multiprocessing).")
     
-    #.add_argument("--mpi", dest="mpi", default=False,
+    #roup.add_argument("--mpi", dest="mpi", default=False,
     #                   action="store_true", help="Run with MPI.")
     
     parser.add_argument("--sim", dest="sim", default=False, 
                        help="simulation to use: m12b, m12c, m12i..")
     parser.add_argument("--figname", dest="figure_name", default=False, 
                        type=str, help="Simulation name")
+    parser.add_argument("--outpath", dest="outpath", default="./", 
+                       type=str, help="output path")
     parser.add_argument("--rmin", dest="rmin", default=0, 
                        type=int, help="minimum radii")
     parser.add_argument("--rmax", dest="rmax", default=500, 
                        type=int, help="maximum radii")
+    parser.add_argument("--bmin", dest="bmin", default=10, 
+                       type=int, help="minimum b for histogram")
+    parser.add_argument("--bmax", dest="bmax", default=1500, 
+                       type=int, help="maximum b for histrogram")
     parser.add_argument("--i", dest="snap_init", default=0, 
                        type=int, help="final snapshot")
     parser.add_argument("--f", dest="snap_final", default=1, 
                        type=int, help="final snapshot")
+    parser.add_argument("--remove_subs", dest="remove_subs", 
+                       default=False, help="removing substructure")
+    parser.add_argument("--partype", dest="part_type", 
+                       type=int, help="particle type 1) DM, 2) stars, 3) both")
     args = parser.parse_args()
 
    
@@ -367,6 +397,30 @@ if __name__ == "__main__":
     snap_init = args.snap_init
     snap_final = args.snap_final
 
-    compute_poles = main(pool, args.sim, args.rmin, args.rmax,
-                         part_type, analysis_type, outpath, args.figure_name,
-                         remove_subs=True)
+
+
+    if args.part_type == 1:
+       part_type=['dark']
+       args.bmin=100
+       args.bmax=1500
+    elif args.part_type == 2:
+       part_type=['star']
+       args.bmin=10
+       args.bmax=1000
+
+    elif args.part_type == 3:
+       part_type=['dark', 'star']
+    
+    write_params(args) 
+
+    # Other parameters 
+    # bmin, bmax = 100,1500 -> dark
+    # bmin, bmax = 100, 1000 -> stars
+    
+
+    delta_snap = 1
+    analysis_type = "orbital_poles"
+
+    compute_poles = main(pool, args.sim, args.rmin, args.rmax, part_type,
+                         analysis_type, args.outpath, args.figure_name,
+                         args.remove_subs, bmin=args.bmin, bmax=args.bmax)
