@@ -45,6 +45,8 @@ import healpy as hp
 from  healpy.newvisufunc import projview, newprojplot
 from scipy.linalg import norm
 
+import pynbody
+
 
 ## Rotations 
 
@@ -98,7 +100,7 @@ def mollweide_projection(l, b, l2, b2, title, bmin, bmax, nside,  smooth=5, **kw
     # fill the fullsky map
     hpx_map = np.zeros(npix, dtype=int)
     hpx_map[idx] = counts/degsq
-    map_smooth = hp.smoothing(hpx_map, fwhm=smooth*np.pi/180)
+    map_smooth = hp.smoothing(np.log10(hpx_map+1), fwhm=smooth*np.pi/180)
     
   
     fig, ax = plt.subplots(1, 1, figsize=(12, 5))
@@ -113,8 +115,8 @@ def mollweide_projection(l, b, l2, b2, title, bmin, bmax, nside,  smooth=5, **kw
     xlabel="Galactic Longitude (l) ",
     ylabel="Galactic Latitude (b)",
     cb_orientation="horizontal",
-    min=bmin,
-    max=bmax,
+    min=20,
+    max=1000,
     latitude_grid_spacing=45,
     projection_type="mollweide",
     title=title,)
@@ -211,7 +213,8 @@ class FIRE_analysis(object):
         self.figure_name = figure_name
 
         self.simulation_directory = '/mnt/ceph/users/firesims/fire2/metaldiff/{}_res7100'.format(self.sim)
-
+        times = '/mnt/ceph/users/firesims/fire2/metaldiff/{}_res7100/snapshot_times.txt'.format(self.sim)
+        self.times = np.loadtxt(times, usecols=3)
         self.remove_subs = remove_subs
 
          
@@ -253,8 +256,8 @@ class FIRE_analysis(object):
                 print("-> Computing orbital poles for star particles")
                 stars_kinematics = nba.kinematics.Kinematics(pos_stars, vel_stars)
                 stars_l_host, stars_b_host = stars_kinematics.pos_cartesian_to_galactic()
-                stars_figname = self.outpath + "{}_".format(self.sim) + self.figure_name +  "_stars_{:03d}.png".format(snap)
-                title_stars = "{} star {}-{} kpc".format(self.sim, self.bmin,  self.bmax)
+                stars_figname = self.outpath + "{}_".format(self.sim) + self.figure_name +  "_{:03d}.png".format(snap)
+                title_stars = "{} star; {}-{} kpc; {:03d}  Gyr".format(self.sim, self.rmin,  self.rmax, self.times[snap] )
                 mollweide_projection(stars_l_host*180/np.pi, stars_b_host*180/np.pi, [0], [0], 
                                      title=title_stars, bmin=self.bmin, bmax=self.bmax, nside=40, figname=stars_figname)
         
@@ -291,10 +294,16 @@ class FIRE_analysis(object):
                 dm_m12b_kinematics_2 = nba.kinematics.Kinematics(pos_dm, vel_dm)
                 dm_l_host, dm_b_host = dm_m12b_kinematics_2.pos_cartesian_to_galactic()
                 dm_figname = self.outpath + "{}_".format(self.sim) + self.figure_name + "_{:03d}.png".format(snap)
-                title_dark = "{} dark {}-{} kpc".format(self.sim, self.bmin,  self.bmax)
+                title_dark = "{} dark; {}-{} kpc; t={:.2f} Gyr".format(self.sim, self.rmin, self.rmax, self.times[snap])
                 mollweide_projection(dm_l_host*180/np.pi, dm_b_host*180/np.pi,
                     [0],[0], title=title_dark ,bmin=self.bmin,  bmax=self.bmax,
                     nside=40, figname=dm_figname)
+
+            if self.analysis_type == "shape":
+                shape = pynbody.analysis.halo.halo_shape(pos_dm, N=100, rin=20, rout=500, bins='equal')
+                #dm_figname = self.outpath + "{}_".format(self.sim) + self.figure_name + "_{:03d}.png".format(snap)
+                title_dark = "{} dark {}-{} kpc".format(self.sim, self.rmin,  self.rmax)
+
         return 0
     def callback(self, result):
         #ith open(self.outpath+"text.txt", 'a') as f:
@@ -401,12 +410,12 @@ if __name__ == "__main__":
 
     if args.part_type == 1:
        part_type=['dark']
-       args.bmin=100
-       args.bmax=1500
+       args.bmin=5
+       args.bmax=9
     elif args.part_type == 2:
        part_type=['star']
-       args.bmin=10
-       args.bmax=1000
+       args.bmin=0
+       args.bmax=5
 
     elif args.part_type == 3:
        part_type=['dark', 'star']
@@ -414,8 +423,8 @@ if __name__ == "__main__":
     write_params(args) 
 
     # Other parameters 
-    # bmin, bmax = 100,1500 -> dark
-    # bmin, bmax = 100, 1000 -> stars
+    # bmin, bmax = 100, 1500 -> dark
+    # bmin, bmax = 10, 100 -> stars
     
 
     delta_snap = 1
