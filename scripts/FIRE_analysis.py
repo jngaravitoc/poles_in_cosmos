@@ -115,8 +115,8 @@ def mollweide_projection(l, b, l2, b2, title, bmin, bmax, nside,  smooth=5, **kw
     xlabel="Galactic Longitude (l) ",
     ylabel="Galactic Latitude (b)",
     cb_orientation="horizontal",
-    min=20,
-    max=1000,
+    min=bmin,
+    max=bmax,
     latitude_grid_spacing=45,
     projection_type="mollweide",
     title=title,)
@@ -216,19 +216,19 @@ class FIRE_analysis(object):
         times = '/mnt/ceph/users/firesims/fire2/metaldiff/{}_res7100/snapshot_times.txt'.format(self.sim)
         self.times = np.loadtxt(times, usecols=3)
         self.remove_subs = remove_subs
-
+        print(self.remove_subs)
          
         self.bmin = kwargs['bmin'] 
         self.bmax = kwargs['bmax']
 
-        if self.remove_subs == True :
-            print("-> Removing particles from the massive subhalo using Emily Cunninghan's SCF IDs")
+        if self.remove_subs == 1 :
+            print("-> Removing particles from the massive subhalo using Emily Cunninghan's IDs")
             subs_path = '/mnt/home/ecunningham/ceph/latte/{}_res7100/massive_stream/dm_inds.npy'.format(self.sim)
-            subs_ids = np.load(subs_path)
-            self.mask_sub=np.ones(len(dm_host_distance), dtype=bool) 
-            self.mask_sub[subs_ids]=0
-            self.subs_id =np.zeros_like(self.mask)
-            self.subs_id[subs_ids]=1
+            self.subs_ids = np.load(subs_path)
+            #self.mask_sub=np.ones(len(dm_host_distance), dtype=bool) 
+            #self.mask_sub[subs_ids]=0
+            #self.subs_id =np.zeros_like(self.mask)
+            #self.subs_id[subs_ids]=1
         
     def analyze_snapshot(self, snap):  
 
@@ -257,7 +257,7 @@ class FIRE_analysis(object):
                 stars_kinematics = nba.kinematics.Kinematics(pos_stars, vel_stars)
                 stars_l_host, stars_b_host = stars_kinematics.pos_cartesian_to_galactic()
                 stars_figname = self.outpath + "{}_".format(self.sim) + self.figure_name +  "_{:03d}.png".format(snap)
-                title_stars = "{} star; {}-{} kpc; {:03d}  Gyr".format(self.sim, self.rmin,  self.rmax, self.times[snap] )
+                title_stars = "{} star; {}-{} kpc; t={:.2f}  Gyr".format(self.sim, self.rmin,  self.rmax, self.times[snap] )
                 mollweide_projection(stars_l_host*180/np.pi, stars_b_host*180/np.pi, [0], [0], 
                                      title=title_stars, bmin=self.bmin, bmax=self.bmax, nside=40, figname=stars_figname)
         
@@ -277,9 +277,14 @@ class FIRE_analysis(object):
 	    
             #cartessian_projection(dm_host_distance, figure_name_dark+"with")
             # remove substructue. 
-            if self.remove_subs == True :
-                dm_host_distance = dm_host_distance[self.mask_sub]
-                dm_host_velocity = dm_host_velocity[self.mask_sub]
+            if self.remove_subs == 1 :
+                mask_sub=np.ones(len(dm_host_distance), dtype=bool) 
+                mask_sub[self.subs_ids]=0
+                subs_id = np.zeros_like(mask_sub)
+                subs_id[self.subs_ids]=1
+
+                dm_host_distance = dm_host_distance[mask_sub]
+                dm_host_velocity = dm_host_velocity[mask_sub]
 
                 #m_subs_distance = np.mean(dm_host_distance[self.subs_id])
                 #dm_subs_velocity = np.mean(dm_host_velocity[self.subs_id])
@@ -296,7 +301,7 @@ class FIRE_analysis(object):
                 dm_figname = self.outpath + "{}_".format(self.sim) + self.figure_name + "_{:03d}.png".format(snap)
                 title_dark = "{} dark; {}-{} kpc; t={:.2f} Gyr".format(self.sim, self.rmin, self.rmax, self.times[snap])
                 mollweide_projection(dm_l_host*180/np.pi, dm_b_host*180/np.pi,
-                    [0],[0], title=title_dark ,bmin=self.bmin,  bmax=self.bmax,
+                    [0],[0], title=title_dark, bmin=self.bmin,  bmax=self.bmax,
                     nside=40, figname=dm_figname)
 
             if self.analysis_type == "shape":
@@ -305,6 +310,7 @@ class FIRE_analysis(object):
                 title_dark = "{} dark {}-{} kpc".format(self.sim, self.rmin,  self.rmax)
 
         return 0
+
     def callback(self, result):
         #ith open(self.outpath+"text.txt", 'a') as f:
         #self.write("{0}\n".format(result))
@@ -394,7 +400,7 @@ if __name__ == "__main__":
     parser.add_argument("--f", dest="snap_final", default=1, 
                        type=int, help="final snapshot")
     parser.add_argument("--remove_subs", dest="remove_subs", 
-                       default=False, help="removing substructure")
+                       type=int, default=0,  help="removing substructure")
     parser.add_argument("--partype", dest="part_type", 
                        type=int, help="particle type 1) DM, 2) stars, 3) both")
     args = parser.parse_args()
@@ -410,12 +416,13 @@ if __name__ == "__main__":
 
     if args.part_type == 1:
        part_type=['dark']
-       args.bmin=5
-       args.bmax=9
+       #args.bmin=5
+       #args.bmax=7
+       #args.bmax=9
     elif args.part_type == 2:
        part_type=['star']
-       args.bmin=0
-       args.bmax=5
+       #args.bmin=0
+       #args.bmax=5
 
     elif args.part_type == 3:
        part_type=['dark', 'star']
