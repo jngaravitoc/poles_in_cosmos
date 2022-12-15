@@ -1,0 +1,881 @@
+
+%% Beginning of file 'sample63.tex'
+%%
+%% Modified 2019 June
+%%
+%% This is a sample manuscript marked up using the
+%% AASTeX v6.3 LaTeX 2e macros.
+%%
+%% AASTeX is now based on Alexey Vikhlinin's emulateapj.cls 
+%% (Copyright 2000-2015).  See the classfile for details.
+
+%% AASTeX requires revtex4-1.cls (http://publish.aps.org/revtex4/) and
+%% other external packages (latexsym, graphicx, amssymb, longtable, and epsf).
+%% All of these external packages should already be present in the modern TeX 
+%% distributions.  If not they can also be obtained at www.ctan.org.
+
+%% The first piece of markup in an AASTeX v6.x document is the \documentclass
+%% command. LaTeX will ignore any data that comes before this command. The 
+%% documentclass can take an optional argument to modify the output style.
+%% The command below calls the preprint style which will produce a tightly 
+%% typeset, one-column, single-spaced document.  It is the default and thus
+%% does not need to be explicitly stated.
+%%
+%%
+%% using aastex version 6.3
+%%\documentclass[twocolumn]{aastex63}
+\documentclass{aastex63}
+
+%\documentclass{article}
+\usepackage{hyperref}
+\usepackage{amsthm}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{graphicx}	% Including figure files
+\usepackage{amssymb}	% Extra maths symbols
+\usepackage{float}
+
+\newcommand{\Msun}{M$_{\odot}$}
+\newcommand{\latte}{$Latte$}
+%%\newcommand{\deg}{$^{\circ}$}
+%% The default is a single spaced, 10 point font, single spaced article.
+%% There are 5 other style options available via an optional argument. They
+%% can be invoked like this:
+%%
+%% \documentclass[arguments]{aastex63}
+%% 
+%% where the layout options are:
+%%
+%%  twocolumn   : two text columns, 10 point font, single spaced article.
+%%                This is the most compact and represent the final published
+%%                derived PDF copy of the accepted manuscript from the publisher
+%%  manuscript  : one text column, 12 point font, double spaced article.
+%%  preprint    : one text column, 12 point font, single spaced article.  
+%%  preprint2   : two text columns, 12 point font, single spaced article.
+%%  modern      : a stylish, single text column, 12 point font, article with
+%% 		  wider left and right margins. This uses the Daniel
+%% 		  Foreman-Mackey and David Hogg design.
+%%  RNAAS       : Preferred style for Research Notes which are by design 
+%%                lacking an abstract and brief. DO NOT use \begin{abstract}
+%%                and \end{abstract} with this style.
+%%
+%% Note that you can submit to the AAS Journals in any of these 6 styles.
+%%
+%% There are other optional arguments one can invoke to allow other stylistic
+%% actions. The available options are:
+%%
+%%   astrosymb    : Loads Astrosymb font and define \astrocommands. 
+%%   tighten      : Makes baselineskip slightly smaller, only works with 
+%%                  the twocolumn substyle.
+%%   times        : uses times font instead of the default
+%%   linenumbers  : turn on lineno package.
+%%   trackchanges : required to see the revision mark up and print its output
+%%   longauthor   : Do not use the more compressed footnote style (default) for 
+%%                  the author/collaboration/affiliations. Instead print all
+%%                  affiliation information after each name. Creates a much 
+%%                  longer author list but may be desirable for short 
+%%                  author papers.
+%% twocolappendix : make 2 column appendix.
+%%   anonymous    : Do not show the authors, affiliations and acknowledgments 
+%%                  for dual anonymous review.
+%%
+%% these can be used in any combination, e.g.
+%%
+%% \documentclass[twocolumn,linenumbers,trackchanges]{aastex63}
+%%
+%% AASTeX v6.* now includes \hyperref support. While we have built in specific
+%% defaults into the classfile you can manually override them with the
+%% \hypersetup command. For example,
+%%
+%% \hypersetup{linkcolor=red,citecolor=green,filecolor=cyan,urlcolor=magenta}
+%%
+%% will change the color of the internal links to red, the links to the
+%% bibliography to green, the file links to cyan, and the external links to
+%% magenta. Additional information on \hyperref options can be found here:
+%% https://www.tug.org/applications/hyperref/manual.html#x1-40003
+%%
+%% Note that in v6.3 "bookmarks" has been changed to "true" in hyperref
+%% to improve the accessibility of the compiled pdf file.
+%%
+%% If you want to create your own macros, you can do so
+%% using \newcommand. Your macros should appear before
+%% the \begin{document} command.
+%%
+%\newcommand{\vdag}{(v)^\dagger}
+%\newcommand\aastex{AAS\TeX}
+%\newcommand\latex{La\TeX}
+
+%% Reintroduced the \received and \accepted commands from AASTeX v5.2
+%\received{June 1, 2019}
+%\revised{January 10, 2019}
+%\accepted{\today}
+%% Command to document which AAS Journal the manuscript was submitted to.
+%% Adds "Submitted to " the argument.
+%\submitjournal{AJ}
+
+%% For manuscript that include authors in collaborations, AASTeX v6.3
+%% builds on the \collaboration command to allow greater freedom to 
+%% keep the traditional author+affiliation information but only show
+%% subsets. The \collaboration command now must appear AFTER the group
+%% of authors in the collaboration and it takes TWO arguments. The last
+%% is still the collaboration identifier. The text given in this
+%% argument is what will be shown in the manuscript. The first argument
+%% is the number of author above the \collaboration command to show with
+%% the collaboration text. If there are authors that are not part of any
+%% collaboration the \nocollaboration command is used. This command takes
+%% one argument which is also the number of authors above to show. A
+%% dashed line is shown to indicate no collaboration. This example manuscript
+%% shows how these commands work to display specific set of authors 
+%% on the front page.
+%%
+%% For manuscript without any need to use \collaboration the 
+%% \AuthorCollaborationLimit command from v6.2 can still be used to 
+%% show a subset of authors.
+%
+%\AuthorCollaborationLimit=2
+%
+%% will only show Schwarz & Muench on the front page of the manuscript
+%% (assuming the \collaboration and \nocollaboration commands are
+%% commented out).
+%%
+%% Note that all of the author will be shown in the published article.
+%% This feature is meant to be used prior to acceptance to make the
+%% front end of a long author article more manageable. Please do not use
+%% this functionality for manuscripts with less than 20 authors. Conversely,
+%% please do use this when the number of authors exceeds 40.
+%%
+%% Use \allauthors at the manuscript end to show the full author list.
+%% This command should only be used with \AuthorCollaborationLimit is used.
+
+%% The following command can be used to set the latex table counters.  It
+%% is needed in this document because it uses a mix of latex tabular and
+%% AASTeX deluxetables.  In general it should not be needed.
+%\setcounter{table}{1}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%% The following section outlines numerous optional output that
+%% can be displayed in the front matter or as running meta-data.
+%%
+%% If you wish, you may supply running head information, although
+%% this information may be modified by the editorial offices.
+%\shorttitle{Orbits of Milky Way Satellites}
+%\shortauthors{Garavito-Camargo et al.}
+%%
+%% You can add a light gray and diagonal water-mark to the first page 
+%% with this command:
+%% \watermark{text}
+%% where "text", e.g. DRAFT, is the text to appear.  If the text is 
+%% long you can control the water-mark size with:
+%% \setwatermarkfontsize{dimension}
+%% where dimension is any recognized LaTeX dimension, e.g. pt, in, etc.
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\graphicspath{{./}{figures/}}
+%% This is the end of the preamble.  Indicate the beginning of the
+%% manuscript itself with \begin{document}.
+
+\begin{document}
+
+
+%% LaTeX will automatically break titles if they run longer than
+%% one line. However, you may use \\ to force a line break if
+%% you desire. In v6.3 you can include a footnote in the title.
+
+%% A significant change from earlier AASTEX versions is in the structure for 
+%% calling author and affiliations. The change was necessary to implement 
+%% auto-indexing of affiliations which prior was a manual process that could 
+%% easily be tedious in large author manuscripts.
+%%
+%% The \author command is the same as before except it now takes an optional
+%% argument which is the 16 digit ORCID. The syntax is:
+%% \author[xxxx-xxxx-xxxx-xxxx]{Author Name}
+%%
+%% This will hyperlink the author name to the author's ORCID page. Note that
+%% during compilation, LaTeX will do some limited checking of the format of
+%% the ID to make sure it is valid. If the "orcid-ID.png" image file is 
+%% present or in the LaTeX pathway, the OrcID icon will appear next to
+%% the authors name.
+%%
+%% Use \affiliation for affiliation information. The old \affil is now aliased
+%% to \affiliation. AASTeX v6.3 will automatically index these in the header.
+%% When a duplicate is found its index will be the same as its previous entry.
+%%
+%% Note that \altaffilmark and \altaffiltext have been removed and thus 
+%% can not be used to document secondary affiliations. If they are used latex
+%% will issue a specific error message and quit. Please use multiple 
+%% \affiliation calls for to document more than one affiliation.
+%%
+%% The new \altaffiliation can be used to indicate some secondary information
+%% such as fellowships. This command produces a non-numeric footnote that is
+%% set away from the numeric \affiliation footnotes.  NOTE that if an
+%% \altaffiliation command is used it must come BEFORE the \affiliation call,
+%% right after the \author command, in order to place the footnotes in
+%% the proper location.
+%%
+%% Use \email to set provide email addresses. Each \email will appear on its
+%% own line so you can put multiple email address in one \email call. A new
+%% \correspondingauthor command is available in V6.3 to identify the
+%% corresponding author of the manuscript. It is the author's responsibility
+%% to make sure this name is also in the author list.
+%%
+%% While authors can be grouped inside the same \author and \affiliation
+%% commands it is better to have a single author for each. This allows for
+%% one to exploit all the new benefits and should make book-keeping easier.
+%%
+%% If done correctly the peer review system will be able to
+%% automatically put the author and affiliation information from the manuscript
+%% and save the corresponding author the trouble of entering it by hand.
+
+\correspondingauthor{Nicol\'as Garavito-Camargo}
+\email{ngaravito@flatironinstitute.org}
+
+\author[0000-0001-7107-1744]{Nicol\'as Garavito-Camargo}
+\affiliation{Center for Computational Astrophysics, Flatiron Institute.\\
+162 5th Ave, New York, NY 10010, USA}
+
+\author[0000-0003-0872-7098]{Adrian Price-Whelan}
+\affiliation{Center for Computational Astrophysics, Flatiron Institute.\\
+162 5th Ave, New York, NY 10010, USA}
+
+
+
+
+
+
+
+
+
+
+
+\title{The impact of massive satellite galaxies on the all-sky orbital poles distribution of Milky Way-like galaxies in FIRE}
+%\nocollaboration{2}
+
+%% Note that the \and command from previous versions of AASTeX is now
+%% depreciated in this version as it is no longer necessary. AASTeX 
+%% automatically takes care of all commas and "and"s between authors names.
+
+%% AASTeX 6.3 has the new \collaboration and \nocollaboration commands to
+%% provide the collaboration status of a group of authors. These commands 
+%% can be used either before or after the list of corresponding authors. The
+%% argument for \collaboration is the collaboration identifier. Authors are
+%% encouraged to surround collaboration identifiers with ()s. The 
+%% \nocollaboration command takes no argument and exists to indicate that
+%% the nearby authors are not part of surrounding collaborations.
+
+%% Mark off the abstract in the ``abstract'' environment. 
+
+\begin{abstract}
+
+
+Our understanding of the disequilibrium in galaxies caused by the interactions with massive satellites have just recently start to be considered in our own galaxy. A natural consequence of such galaxy-satellite interactions is that the inner part of the host galaxy is not in the same reference frame as the outer halo. The inner halo is displace in both positions and velocities w.r.t to the outer halo. Such displacement in velocity has been measured in the Milky Way (MW), caused by the Large Magellanic Cloud. As suggested first by GC21b these out-of-equilibrium state would affect observed orbital poles of satellites galaxies. Using the $Latte$ suite of simulations we confirm that the barycenter motion induced by massive satellites change the distribution of orbital poles of satellite galaxies and other halo tracers. In cases when the satellites are not very massive or have shorter pericenter passages the poles distribution changes only in a short time scale right after the 1st pericenter passage of the satellite. For massive satellites with pericenters in the order of the scale length of the host halo the poles distribution change permanently right after pericenter. These results confirm that in the MW, the effect of the LMC should be taken into account to properly interpret the observed clustering of satellites galaxies on the MW.
+\end{abstract}
+
+%% Keywords should appear after the \end{abstract} command. 
+%% See the online documentation for the full list of available subject
+%% keywords and the rules for their use.
+%\keywords{editorials, notices --- 
+%miscellaneous --- catalogs --- surveys}
+
+%% From the front matter, we move on to the body of the paper.
+%% Sections are demarcated by \section and \subsection, respectively.
+%% Observe the use of the LaTeX \label
+%% command after the \subsection to give a symbolic KEY to the
+%% subsection for cross-referencing in a \ref command.
+%% You can use LaTeX's \ref and \label commands to keep track of
+%% cross-references to sections, equations, tables, and figures.
+%% That way, if you change the order of any elements, LaTeX will
+%% automatically renumber them.
+%%
+%% We recommend that authors also use the natbib \citep
+%% and \citet commands to identify citations.  The citations are
+%% tied to the reference list via symbolic KEYs. The KEY corresponds
+%% to the KEY in the \bibitem in the reference list below. 
+
+%TBD 
+
+%Collaborators: Emily Cunningham, Robyn Sanderson, Jenna Samuel, andrew Wetzel, Facundo Gomez, Gurtina Besla, KVJ, APW, Ekta Patel, Arpit Arora, Silvio Varela, Chervin Laporte, Lehman Garrison
+
+%To include: Alex Riley, Martin Weinberg?
+
+
+
+\section{introduction}\label{sec:intro}
+
+
+%\begin{itemize}
+%    \item Review of the planes of satellites problem
+%        \item Separate spatial and co-rotation. 
+%    \item Planes of satellites proposed solution with the LMC reference, Ekta, Jenna, GC21b. 
+%    \item Here we explore the effect of massive satellites in a cosmological context. Weather the effects presented in Patel are consistent in FIRE. This is complementary with Jenna's work. All-sky characterization and focusing at pericenter passages.
+%    \item Previous works in cosmological simulations. Kravtsov, Libeskind etc.. What is different here. 
+%    \item Outline of the paper.
+%\end{itemize}
+
+
+The existence of a thin 20 kpc co-rotating plane of satellite galaxies around the Milky Way (MW)
+remains conundrum in our understanding of how galaxies assembly over time (not only for the $\Lambda$ CDM) model \citep{BK21}. The satellites in the
+planes are in polar orbits perpendicular to the plane of the disk of the MW,
+forming a Vast Polar Structure (here after VPOS). Furthermore, with line-of-sight velocities planar structure of satellites with kinematic coherence have also been observed in the neighbor galaxies Andromeda (M31) and Centaurus A (Cen A). Although with new measurement of M31's distance the satellite distribution is more loop-sided than in a planar configuration \cite{Savino22}. For a comprehensive review on the history of the observations and proposed solution of plane formation we refer the interested reader to \cite{Pawlowski18, Pawlowski21, Pawlowski21b}. 
+
+
+In cosmological simulations it is rare to find such a thin disk of satellites
+co-rotating. For example, \cite{Pawlowski20} found that less than 0.1\% of the MW-analogues in the Illustris simulation have co-rotating planes similar to the VPOS.  
+
+However, there has been recent results from cosmological simulations that report that planes are rare but still consistent with $\Lambda$CDM. As reported by \cite{Sawala22, Pham22} simulations that account for artificial tidal disruption (citation) there probability of finding co-rotating planes is $\approx 2\%$ which is within the 2-3$\sigma$ level, also see \cite{Foster22}. 
+Aside from the formation mechanism the stability and lifetime of the planes are very important to study. In isolated simulations \cite{Fernando17, Fernando18} showed that planes are very transient structures with lifetimes of $\approx$ XX for MW-like halos. These planes are sensitive and can be destroyed by substructure in the halo and by  deviations from spherical shape of the host halo. More recently Santos-Santos show that...kinematic coherence of satellite galaxies is possible.
+
+Yet it is unclear what is the physical process that create these planes and the time-scales of these planes in cosmological simulations. In contrast with other small scale problems in $\Lambda$CDM (sales), baryonic processes do not seem to increase the probability of finding co-rotating planes in simulations \citep{Ahmed17}. Aside from artificial disruption which suppress DM subhalos on more radial orbits. 
+
+If one only focuses on the existence of spatial planes of satellites, the probability of finding these planes is more common. Libeskind2005
+
+%Satellite planar configuration Welker+16 STScI group, Santos-Santos20, 
+
+
+The existence of a massive satellite has been proposed to affect the interpretation and a possible explanation of the co-rotation of the plane. Samuel+21 found that in halos that host a massive satellite the probability of finding orbital poles clustering increases by XX, this been likely due to satellites of the satellite. Coincidentally the Large Magellanic? Cloud, the most massive satellite of the MW, just past it's first pericenter passage about the MW. However, none of the classical satellites that are in the VPOS seem to be satellites of the Large Magellanic Cloud.
+
+The motivation of these paper is to study in what ways massive satellites induce dynamical disequilibrium in the host and what is the connection of these interactions with the formation of VPOS structures. In this paper we follow-up on the work presented in Samuel+21 and GC+21. In GC+21 it was shown that a 
+massive satellites like the LMC induce {\textit{apparent}} co-rotation patterns in the outer halo. In an isolated galaxy the entire galaxy is in the same reference frame. However, when a massive satellite approaches its pericenter the inner galaxy (disk and halo) can react faster to the passage of the satellite and follow it's trajectory. The dynamical times in the outer halo are longer and hence it lags in following the massive satellite. This results in a relative displacement between the reference frames of the inner halo and the outer halo. In other words the inner galaxy is not an inertial reference frame for the outer halo. 
+
+
+From a dynamical point of view this displacement is expected and the first response of the outer halo. As shown in Weinberg+22 the dipole response $l=1$ has the largest amplitude and is weekly damped and persist for several dynamical times. The dipole response can easily be excited, for example by the passage of a massive satellite. This is therefore a natural explanation that phase space offsets should exist between the inner and outer hale. On the other hand {\textit{A dipolar response is not expected to induce a planar configuration of satellite galaxies}}. 
+
+
+In the MW there are several observational signatures and consequences of this reference frame motion. First, as shown in \cite{garavito-camargo19a, Petersen19-disk}
+the velocity of the outer halo tracers should have a net motion, {\textit{travel velocity\footnote{This is also referred as the reflex motion.}}} and {\textit{travel distance}}, as measured from the disk of the galaxy. Thanks to the {\textit{Gaia}} data this travel velocity was measured by \cite{Peterson20, Erkal20b}. Such motion has several consequences, for example orbits of any tracer in the outer halo have to account for the both travel velocity and distance (vasiliev, lillengehn, patel).  Interpreting the measurement of the shape of the MW's halo \citep{GC20}. Measuring the mass of the MW using dynamical arguments \cite{Erktal, Chamberlain}. 
+
+Pawlowski+22 showed by comparing with the idealized N-body simulations and the
+observed kinematics of the MW satellites, that the effect of the co-rotation
+induced by the LMC is insufficient to explain the observed VPOS. However, it is
+not self-consistent to compare the dynamics of satellite galaxies with that of
+dark matter particles in the simulation. This is revisited in a companion paper Patel+23 that shows that the inner halo motion caused by the LMC is sufficient to induce co-rotation in several satellites of the MW. 
+
+
+In this paper we explore this scenario in a cosmological context. We use 
+the \latte simulations and idealized simulations to explore 1) What is 
+the effect and magnitude  of a massive satellite in the orbital pole 
+configuration of the host halo tracers. 2) What are the time-scales of 
+the observed features in the orbital poles. 3) Do any massive satellite induced
+co-rotation patterns in the host? 
+
+We structured this paper as follows: In \S~\ref{sec:sims} we describe the
+simulations that we use. In \S~\ref{sec:reflex} we present the amplitude of 
+the reflex motion (we need to decide how to call it, reflex motion or travel velocity!).
+We study the effect on the orbital poles distribution in \S~\ref{sec:all_sky}. We then 
+quantify the temporal evolution of the orbital poles distribution in \S~\ref{sec:corrfunc}. 
+We connect these results with global measurements of the orbital poles, such as dispersion and 
+mean root square $\Delta_{sph}$ in \S~\ref{sec:}
+
+
+\section{Simulations}\label{ref:sims}
+
+
+\begin{table*}
+    \centering
+    \begin{tabular}{c c c c c c c c c}
+    \hline
+    Simulation & GC19 & m12b & m12c & m12f & m12i & m12m & m12r & m12w \\
+    \hline
+    \hline
+    Host mass at $z$=0 [$\times 10^{12}$ \Msun] & 1.43 & 1.18 & 1.87 & 1.39 & 0.97 & 1.96 & 0.95 & 0.9 \\
+    %Host mass at satellite's peri [$\times 10^{12}$ \Msun] & 1.43 & 1.05 & 1.89 & 1.27 & $\approx$ 0.75 & 1.32 & [0.71, 0.87, 0.94] &  [0.7, 0.82] \\
+    Host mass at infall [$\times 10^{12}$ \Msun] & 1.43 & 0.82 & 1.54 & 1.14 & - & 0.77& [0.37, 0.64, 0.83] &  [0.59, 0.8] \\
+
+    Satellite mass at infall [$\times 10^{11}$ \Msun] & [0.8, 1, 1.8, 2.5] & 2.1 & 1.6 & 1.5 & - &  & [2.3, 1.3, 1.3] & [9, 0.4] \\ 
+    $r$ pericenter [kpc] & 45 & 38 & 18 & 36 & 27 & 80 & 48 & 8 \\
+    $t$ 1st pericenter [Gyr] & 1.5 & 8.81 & 12.9 & 10.8  & 7.65 & 10.4 & 11 & 8\\
+    infall snapshot & 0 & 300 & 300 & & & & & \\
+    pericenter snapshot & [90, 112, 110, 114] & 385 & 549 & & & & & \\
+    Merger tree ids & - & & & & & & \\
+    \hline 
+    \end{tabular}
+    \caption{Simulations properties. Halo masses for the Latte suite. $M_{200m}$ is defined as the total mass within a spherical radius with mean density 200 $\times$ the matter density of the Universe. Data taken from Wetzel+2022 and Samuel+2021. }
+    \label{tab:fire_sats}
+\end{table*}
+
+We use the $Latte$ suite of zoom-in cosmological simulations of isolated MW-like galaxies (without massive galaxies within a distance of $5\times R_{200}$ of each galaxy). $Latte$ used the Feedback In Realistic Environments (FIRE-2) physics model~\footnote{\hyperref[https://fire.northwestern.edu/]{https://fire.northwestern.edu/}}. which includes detailed subgrid models
+for gas physics, star formation, and stellar feedback. Gas models
+used include: a metallicity-dependent treatment of radiative heating and cooling over 10 − 1010 k, a cosmic ultraviolet background with early HI reionization $z_{reion} \approx 10$ \citep{faucher-}, and turbulent metal diffusion \citep{hopkins16, su17, escala18}. We allow gas that is self gravitating jeans unstable cold ($t \leq 10^4$K)  dense ($n \geq $ 1000 $cm^{-3}$), and molecular (following \citep{krumholds}) to form stars. Star particles represent individual stellar populations under the assumption of a kroupa stellar initial mass function \citep{Kroupa01}. Once formed star particles evolve according to stellar population models from starburst99 v7.0 \cite{leitherer}. We model several stellar feedback processes including core collapse and type Ia supernovae, continuous stellar mass loss  photoionization, photoelectric heating, and radiation pressure. 
+
+
+The simulation uses a $\Lmabda$CDM cosmology with parameters $\Omega_{\Lambda} = 0.728, \Omega_{matter} = 0.272, \Omega_{baryon} = 0.0455, h = 0.702, \sigma_8 = 0.807$, and $n_s = 0.961$. The simulations were run with the FIRE-2 model whose detailed information can be found in \citep{hopkins2018fire}. A detailed
+description of the properties of the \latte suite can be found in \citep{Wetzel16}. In short, the simulation consist of 7 MW-like halos with halo 
+with masses at $z=0$ of  $m_{200m} = 1 − 2 \times 10^{12}$ \Msun. Within a 
+sphere of 600 kpc around each MW-like galaxy the suite has a mass resolution of 
+$m_{\star} = 7070$ \Msun and $m_{dm} = 3.5 \times 10^4$ \Msun,  which allows to 
+capture the dynamical processes that take place during the evolution of these 
+halos.
+
+In addition to the $Latte$ suite, we use the idealized N-body simulations of the MW-LMC interaction presented in~\citep{garavito-camargo19a, garavito-camargo21a}. The main properties of these simulations are summarized in Section 3.2 and in table of \citep{garavito-camargo21a}. We re-run these simulations in Gadget-4 \citep{Gadget4} using the Fast Multiple Method (FMM) gravity solver to guarantee momentum conservation (citations). We ran the simulations for a total of 10 Gyrs to study the future evolution of the LMC around the MW. In particular we can compare the time evolution of the orbital poles clustering presented in \citep{garavito-camargo21b}. 
+
+
+\subsection{LMC analogues in FIRE}
+
+In this Article we are primarily interested on understanding the orbital poles distribution close to pericenter passages of massive satellites. We therefore limited our study to LMC analogues in the \latte suite. We identify the most massive satellites accretion events for the 7 halos. A summary of the properties of these massive satellites in each halo can be found in Table~\ref{tab:fire_sats}. 
+We then select satellites that have mass ratios of the order of 1:10 at the time of infall. Out of the 7 hosts in \latte m12i and m12m do not accrete a satellite with mass ratios larger than XX. On the other hand, m12r and m12w experience three mergers of massive satellites in total. In the particular case of m12r, the mergers happen simultaneously and the resulting response of the DM halo is more complicated that in the other systems. 
+
+
+
+In Figure~\ref{fig:orbits_properties} we show the eccentricities, pericenter distances and satellite-host mass ratios at infall. For comparison we also include the MW-LMC simulations (circle markers). Most of the satellites in \latte are on more eccentric orbits than the MW-LMC and most of them have smaller pericenter distances. From this figure we infer that the closest MW-LMC analogues in \latte are m12b, m12f, and m12r. For simplicity we chose to only focus on two \latte halos m12i and m12b. m12i is representative of a halo that has not experienced the perturbations of an LMC-like satellite 'unperturbed halo' and m12b will be our fiducial 'LMC-analogue'. We will do a full comparison with the 7 halos in \latte in Appendix~\ref{sec:appendinx}. 
+
+Previous studies have also identified LMC-like satellites in \latte. For example \cite{Samuel21} use a total of halos 14 halos, the 7 \latte halos, m12z and the ELVIS suite. In \cite{Samuel21} the halos were studied for the last $\approx5$ Gyr of evolution $z=0-0.5$. Here we extend our study further in time up to $7.5$Gyrs which include the full interaction of the massive satellite in m12b. 
+\cite{Arora} studied the effect of massive satellites in the computation of actions in m12f and m12w. 
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.6]{figures/figures_paper/fire_e_rperi.pdf}
+    \caption{Summary of orbital properties of the most massive satellites in the $Latte$ suite. For comparison the MW-LMC simulations are shown with circle markers. The color-bar shows the satellite-host mass ratio at infall. Overall the majority of the satellites in $Latte$ are on more eccentric orbits and have shorter pericenter passages.}
+    \label{fig:orbits_properties}
+\end{figure}
+
+
+The orbits of the satellite galaxies in m12i, m12b, and the MW-LMC sims are shown in Figure~\ref{fig:satellite_orbits}. Were the velocities and positions were measured in the reference frame of host as defined by the halo finder positions and velocity .We included the orbit of the most massive satellite in m12i which is in a very circular orbit and produces a large stream. This satellite however, is not massive enough to induce significant perturbation on the orbital poles of the host. The shadow regions illustrate the virial radius of the host galaxy as a function of time. The infall properties of the halos were taken when the satellite crosses the virial radius. Pericenter passages are mark with the horizontal dotted blue lines. 
+
+\begin{figure*}
+    \centering
+    \includegraphics[scale=0.6]{figures/figures_paper/m12_main_com_sats.pdf}
+    \includegraphics[scale=0.6]{figures/figures_paper/m12_main_vcom_sats.pdf}
+
+    \caption{Satellite's galactocentric position (top panel) and velocity (middle panel) as a function of time. The magnitude of the host's velocity plotted as a function of time. The host's velocity decreases by 60km/s after the satellite's first pericenter, and then increase 80km/s until the 2nd pericenter. Finally the velocity settles after the merger at 140 km/s. Such rapid motions happen in less than 2 Gyrs. (How does it compare with the dynamical times of the halo). Satellite's galactocentric position (top panel) and velocity (middle panel) as a function of time. The magnitude of the host's velocity plotted as a function of time. The host's velocity decreases by 60km/s after the satellite's first pericenter, and then increase 80km/s until the 2nd pericenter. Finally the velocity settles after the merger at 140 km/s. Such rapid motions happen in less than 2 Gyrs. (How does it compare with the dynamical times of the halo). }
+    \label{fig:satellite_orbits}
+\end{figure*}
+  
+
+\section{Results}
+
+
+\subsection{Amplitude of reflex motion and COM displacements}\label{sec:reflex}
+%\\begin{figure}[h]
+%    \centering
+%    \includegraphics[scale=0.7]{figures/m12b_orbits_projected_faceon.png}
+%    \caption{Orbits co-moving coordinates of m12b host an its massive satellite projected in the present-day face-on view. Where the disk of the host lies in the x-y plane (left panel). The color-bar illustrates the cosmic time in Gyrs. The black stars and dots represent the pericenter and apocenter. Large markers are for the first pericenter and apocenter while the smaller markers for the second ones.}
+%    \label{fig:face_on_orbits}
+%\end{figure}
+
+
+%\section{Center of mass and reflex motion}
+
+We first study the velocity of the host center of mass (vCOM) as a function of time. This is shown in figure~\ref{fig:vcom}, where the vCOM used is the one reported from the halo finder which uses XX. The reference frame is the box, as a result all of the halos a positive Lagrangian velocity as they travel through the cosmic web. For reference the pericenter passages of the massive satellites are shown in blue dotted horizontal lines. In the MW-LMC simulations the reference frame is centered at the center of the simulated volume where the halo was placed at rest at t=0 Gyrs. The impact from the massive satellites on the host vCOM is clearly seen as rapid changes increases and decreases in the velocity is seen close to the pericenter passages of the satellites. 
+
+In m12b, the halo's velocity suddenly decrease by $\approx 60$km/s during the first pericenter of the satellite. At second pericenter the velocity increases by $80$ km/s illustrating the host halo reacting to the satellite. Note that the time scales of these changes occur in $\approx$2 Gyr scale in m12b, but the first decrease in velocity occur in $\approx$ 0.5 Gyr. This time scales are comparable to the dynamical of the halo at 50 kpc. In the MW-LMC simulations changes we see changes in the velocity up to $\approx$70 km/s at pericenter. An important difference is that the first increase happens in $\approx$2 Gyr which is 4 times longer than the case in m12b. Such a difference could be due to the difference eccentricity of the orbit. In m12i we see that the vCOM is roughly constant in during its evolution. Confirming that the satellites in m12i are not massive enough to causes significant perturbations in the halo. 
+
+Include a comment about changes in the future orbit of the MWLMC. due we see changes for how many more pericenters. 
+
+
+\begin{figure*}[h]
+    \centering
+    \includegraphics[scale=0.6]{figures/figures_paper/m12_main_vcom_host.pdf}
+    \includegraphics[scale=0.6]{figures/figures_paper/vCOM_main_motion_outer_halo.pdf}
+
+    \caption{Satellite's galactocentric position (top panel) and velocity (middle panel) as a function of time. The magnitude of the host's velocity plotted as a function of time. The host's velocity decreases by 60km/s after the satellite's first pericenter, and then increase 80km/s until the 2nd pericenter. Finally the velocity settles after the merger at 140 km/s. Such rapid motions happen in less than 2 Gyrs. (How does it compare with the dynamical times of the halo). Reflex motion: Relative velocity between the inner and outer halo. The outer halo velocity is measured using the subhalos (black) and satellites galaxies (purple) that are beyond the pericenter distance of the massive subhalo. The inner halo velocity is shown in Figure~\ref{fig:vcom} and measured by the halo finder}
+    \label{fig:vcom}
+\end{figure*}
+
+
+
+The fast motion induced by the massive satellites on the host halo shown in Figure~\ref{fig:vcom} will induce both a COM and \textit{reflex motion}\footnote{As defined in \cite{Peterson20} the reflex motion only refers to the relative velocity of the inner and outer halo} between the inner and outer halo. This will be the main cause of orbital poles changes as we are going to discuss in \S~\ref{sec:all_sky}. A full quantification of the reflex motion in the FIRE halos is presented in *Riley in prep*. Here we compute the reflex motion as measured by the subhalos from the host, subhalos from massive satellites were not used in this calculation. Figure~\ref{fig:reflex} shows the relative velocity between the outer halo subhalos and the vCOM of the disk computed with the halo finder and shown in Figure~\ref{fig:vcom}. Outer halo was defined in each halo by the pericenter distance of the satellite galaxy (listed in Table~\ref{tab:fire_sats} ?***). We find that the reflex motion is stronger for m12b. As expected, the changes happen at pericenter, in particular the first pericenter passage induced the largest reflex motion $\approx$ 60 km/s. Purple lines shows the measured values using the satellite galaxies. Overall both the reflex measured from the satellites and the subhalos is consistent, however the subhalos provide a less noisy measurement. 
+
+The mean values of the MW's outer halos vCOM are shown by the dotted black line. We find that the amplitude of the reflex motion could be in the range of 40-80km/s.  
+Compared with the MW measured values (note that the value reported by Petersen is 55 km/s) the reflex motion experienced by m12b and m12f are the most similar ones.
+
+
+%\subsection{Torque exert on the inner halo by the satellites}
+\subsection{All-sky orbital poles distribution and evolution}\label{sec:all_sky}
+
+\textbf{Motivation of performing an all-sky analysis of OP}
+All-sky orbital poles distribution provides unique information about filamentary accretion, identification of substructure, and the dynamical state of the galaxy.  Accretion through filaments leaves characteristic patterns in the orbital poles distribution. Orbits of subhalos accreted from the same filament tend to be coplanar (Libeskind). Such a spatial distribution will be anisotropic in the orbital poles space where patterns such as large-scale sinusoidal patterns or clustering will be seen.  (I think there is one paper from Noam showing this). 
+
+Particles and stars belonging to a subhalo have the same angular momentum as measured from the center of the satellite's host galaxy. Those stars and particles appear clustered in orbital poles space. As the substructure is disrupted by the tidal forces of the host, particles will still move in the same direction (similar velocity vectors), but their location is not localized but in tidal tails. This results in arcs and great circles overdensities in the orbital poles distribution. In fact, this idea has been applied to found substructure in the MW (Mateu).
+
+If the host DM halo is static over time the orbital poles distribution also would be static over time. We would only see the tidal disruption of the substructure which we already know occurs along great circles. Aside from these, the orbital poles distribution should be the same. However, we know that a DM halo evolves with time; its shape and orientation change (vera-Ciro), its mass grows, and it responds to the passage of satellites and fly-by galaxies (Weinberg). As such, the orbital poles distribution should evolve accounting for the halo evolution in time. (Add citations and sentences regarding Jenna's paper)
+
+In this section, we study the all-sky distribution and evolution of the orbital poles of m12b, m12i, and the MW-LMC simulation in~\ref{sec:all-sky}. To understand what are the main drivers of the orbital poles evolution, we will focus mainly on the effect of massive satellites (m12b and MW-LMC) and the secular evolution of halos (m12i). We further quantify their distribution and evolution using the angular two-point correlation function in~\ref{sec:corrfunc}. 
+
+\subsubsection{All-sky distribution}\label{sec:all-sky}
+
+%In the DM particles and stars the evolution is not the same..
+
+\begin{figure*}[h]
+    \centering
+    \includegraphics[scale=0.27]{figures/figures_paper/m12b_OP_dark_faceon_no_sat12_300.png}
+    \includegraphics[scale=0.27]{figures/figures_paper/m12b_OP_dark_faceon_no_sat12_386.png}
+    \includegraphics[scale=0.27]{figures/figures_paper/m12b_OP_dark_faceon_no_sat12_440.png}
+
+    
+    \includegraphics[scale=0.27]{figures/figures_paper/m12i_OP_dark_faceon_no_sat12_300.png}
+    \includegraphics[scale=0.27]{figures/figures_paper/m12i_OP_dark_faceon_no_sat12_350.png}
+    \includegraphics[scale=0.27]{figures/figures_paper/m12i_OP_dark_faceon_no_sat12_450.png}
+    
+
+    \caption{\textbf{Secular evolution of orbital poles:} All-sky orbital poles density distribution for Dark Matter (Grey color-map) and stellar particles (Purple color-map) between 50-300 kpc. Each column correspond to a different time in each halo evolution  $m12i$ (top panels) and $m12m$ (bottom panels). The orbital poles of the particles were computed after rotating the disk into the x-y plane and removing the particles from the most massive subhalo / satellite respectively. The density of orbital poles were computed with Healpy. The time evolution shows a the secular evolution of the orbital poles distribution. For m12i, the poles distribution evolve from the being close to the equator to a co-latitudinal distribution. For m12m the distribution remains almost constant in time.}
+    \label{fig:all-sky}
+\end{figure*}
+
+\textbf{What its been plotted}\\
+We follow the evolution of the orbital pole distribution for m12b, m12i, and for the fiducial MW-LMC simulation. Movies showing the last $\approx 6$Gyrs of the evolution of the all-sky orbital poles distribution for the seven \latte halos can be found in Table~\ref{tab:op_mollweide_movies} in the Appendix. Particles from the host's disk and the most massive satellite were removed to see the orbital poles of the host's halo. We remove these particles in all of the analysis presented hereafter. Figure~\ref{fig:all-sky} shows the orbital poles in a Galactocentric distance bin of 50-300 kpc for the three halos (m12b top, m12i middle, MW-LMC bottom). The red star shows the orbital pole
+of the massive satellite. The orbital pole evolution is illustrated in each column. For m12b and the MW-LMC, the left column is chosen to be at the time when the massive satellite is at the virial radius of the host. The middle column is close to the first pericenter passage of the satellite and the right column is close to the second pericenter passage. In m12i, which lacks a massive satellite that significantly affects the orbital poles distribution, we choose three representative moments that show the secular evolution in the poles. 
+
+%As such, any drastic changes in the global distribution of poles would be associated with an sudden change in position or velocity of the host relative to the local environment. 
+
+\textbf{Discussion about What its seen in the movies and plots}\\
+The orbital poles maps shown in Figure~\ref{fig:all-sky} have a lot of substructure seen in as clusters in orbital poles space. The more massive subhalos appear as larger clusters as apposed to the smaller subhalos. Small arcs can also be seen illustrating the tidal disruption of substructure.  In both m12b and m12i (upper and middle rows) the distribution of orbital poles is not isotropic. This is more clearly seen in m12i where the initial orbital poles distribution tend to be aligned at latitude galactic $b=0^{\circ}$. Such anisotropic distribution is indicative that the accretion at that time was mainly along polar orbits (perpendicular to the disk). This distribution changes gradually over time towards a sinusoidal global pattern where the poles are mainly aligned along galactic longitude $l=0{\circ}$. A full time evolution of the poles can be found here. Over the evolution of m12i it there are not sudden changes in the orbital poles distribution. It is a secular evolution that take place over the 6 Gyrs of evolution. 
+
+m12b on the other hand starts with more isotropic distribution of orbital poles. This is the case since at 3 filaments are feeding this halo at that time. At first pericenter passage the distribution of orbital poles experience a rapid change, followed by a second rapid change close to the second pericenter passage. After each pericenter the orbital poles distribution is  different to what it was before. These rapid changes correlated with the orbital pericenters of the satellite demonstrate that massive satellites affect the orbital poles distribution. Furthermore in m12b, we see clustering around the satellites orbital pole (red star) between the last two pericenters. It is not clear, what drives this clustering, since we have remove all the satellite particles provided the halo finder, this particles could be host particles that are feeling strongly the effect of the reflex+CON motion or particles in the DM wake induced by the satellite. 
+
+
+
+\textbf{Conclusions from movies and plots.}
+To summarize we found that in absence of massive satellites the orbital poles distribution experience secular evolution as a results of XX. In contrast in presence of a massive satellite, 
+the orbital poles distribution changes rapidly close to the pericenter passages. The resulting distribution is different and there is enhancement of orbital poles around the satellite's pole. 
+
+Furthermore, the distribution of orbital poles is not isotropic highlighting that the local filamentary environment have an imprint in the observed distribution as noted in (citation, e.g, walker.).  
+
+
+\subsubsection{Two-point correlation function analysis of orbital poles evolution}\label{sec:corrfunc}
+
+
+\begin{figure*}[h]
+    \centering
+    \includegraphics[scale=0.6]{figures/figures_paper/corrfunc_main_dm_all.pdf}
+    \caption{Temporal evolution of the two-point angular correlation function
+      $\tilde{\omega}(\theta)$ of orbital poles distribution for the m12b, m12i, and MW-LMC halos. The
+    distribution of orbital poles is roughly constant in time until a satellite
+  approaches its pericenter (vertical dashed line). Even in minor mergers as the
+one experienced by m12i at $t=8$ Gyrs change the orbital poles
+distribution. For the MW-LMC halo (right panel) the relative changes are two
+orders of magnitude lower than both \Latte halos. {\textbf{Double-check these
+order of magnitude difference.}}}
+    \label{fig:2d_corrfunc_alldm}
+\end{figure*}
+
+%-- > outer halo defined as rperi
+%-->  Include lines from Ekta's potentials Cranes
+%--> Vtravel and Rtravel 
+
+In this section we characterized the all-sky orbital poles distribution and evolution using 
+the angular two-point correlation function. We use Landy-Szalay estimator \citep{LandySzalay} using the python library \textsc{Corrfunc}\footnote{\href{https://corrfunc.readthedocs.io/en/master/index.html}{https://corrfunc.readthedocs.io/en/master/index.html}} \citep{corrfunc, 10.1007/978-981-13-7729-7_1}. The Landy-Szalay estimator $\omega (\theta)$ is defined as:   
+
+\begin{equation}
+    \omega(\theta) = \frac{DD}{RR} -1 
+\end{equation}\label{eq:corrfunc}
+
+Where RR is the number of pairs of a random isotropic distribution of $N$ orbital poles in the sky. The sky is binned in annulus defined of width $\Delta \theta = cos \theta_1 - cos \theta_2$ where $\theta_1$ and $\theta_2$ defined the width of the annulus. The number of pairs RR is: 
+
+\begin{equation}
+    RR = \frac{-N (N-1)}{2} (cos\ \theta_1 - cos\ \theta_2)
+\end{equation}
+
+Similarly, DD in equation~\ref{eq:corrfunc} is the number of pairs in the measured orbital poles distribution. We also defined $\tilde{\omega}$ to estimate the relative change in the two-point angular correlation function with respect to the initial poles distribution $DD_i$. In all of our cases we take $DD_i$ from the poles distribution at snapshot 300. 
+
+\begin{equation}
+    \tilde{\omega}(\theta, t) = \frac{DD(t)}{DD(t_{infall})} - 1 
+\end{equation}\label{eq:corrfunc}
+
+
+Where $DD(t_{infall})$ is the number of pairs at any time after snapshot 300. Conceptually the correlation function is the probability of finding a pair of orbital poles separated by an angular distance ($\theta$). For example, if the orbital poles are clustered within 30$^{\circ}$ around $l=0^{\circ}, b=0^{\circ}$ the probability of finding pairs of poles at an angular scale smaller than $30^{\circ}$ would be greater than at scales larger than $30^{\circ}$. As a result $\omega(\leq  30^{\circ}) \geq \omega(\geq 30^{\circ})$. In the case of an enhancement of poles along a great circle in the sky as the one shown in Figure~\ref{fig:all-sky} for m12i (left middle panel) there is more probability of finding pairs at scales smaller than the width of great circle and at larger scale corresponding to the radius of the great circle close to $180^{\circ}$. 
+
+%We also compute the cross-correlation with the satellite's orbital pole. In that case:
+%\begin{equation}
+%    RR = \frac{-(N-1)}{2} (cos\theta_1 - cos\theta_2)
+%\end{equation}
+
+Figure~\ref{fig:2d_corrfunc_alldm} shows $\tilde{\omega}(\theta)$ as a function of time for m12b (left panel), m12i (middle panels), and the MW-LMC halo. Red (blue) colors show regions with higher (lower) relative probability of finding pairs of orbital poles, with respect to the snapshot at 300. For the MW-LMC halo, we use the snapshot at  t=-2 Gyr to compute $DD_i$ which is where the satellite was at the virial radius. A that time the halo was unperturbed and hence the distribution of poles was isotropic and $\omega (\theta)$ was the same for all angular scales.
+
+For m12b and the MW-LMC halo it is clear that after pericenter (vertical dotted black lines) the distribution of poles change drastically. This is observed as en enhancement in the probability of finding pairs at scales $\leq 60^{\circ}$. After the first pericenter passage there is not significant evolution in $\tilde{\omega}(\theta)$. In m12b there is a rapid change in the orbital poles distribution at the second pericenter passage (dotted line vertical), but this perturbation do not induce a long term evolution as the first pericenter. The effect on the second pericenter passage is not seen in the MW-LMC simulations. Another difference between these two halos is that the amplitude of $\tilde{\omega}(\theta)$, which is two order of magnitude stronger in the \latte halos. It is not clear why this is the case, as shown in (Weinberg+22) the Hernquist halo is more stable than a NFW/Einasto halo. We also start with a spherical system fully in equilibrium which is not the case in a cosmological halo. Such a difference in the initial dynamical state of the halos results in that the amplitude of the perturbations in the cosmological to be stronger than in isolated halos. This caution to compare directly isolated systems to observations or cosmological systems where the dynamics..
+
+\begin{figure*}[h]
+    \centering
+    \includegraphics[scale=0.45]{figures/figures_paper/m12_corrf_30_60.pdf}
+    \caption{Temporal evolution of the correlation function at angular scales
+    $\theta=30^{\circ}$ (darker gray line) and $\theta=60^{\circ}$ (light gray
+    line). In an isotropic distribution of poles $\omega(\theta)$ is the same for both $\theta=30$ and $\theta=60$ as
+  shown in the first 2 Gyrs of evolution in the MWLMC halo (right panel). In the
+\Latte halos the clustering is higher at $\theta=30$. For m12b the and the
+MW-LMC halo $\omega (\theta)$ increases after the satellite first pericenter
+(first dashed back line)}
+    \label{fig:corrfunc_30_60}
+\end{figure*}
+
+
+In m12i (middle panel in Figure~\ref{fig:corrfunc_30_60}) the amplitude of the changes in $\tilde{\omega}(\theta)$ are lower than in the m12b halo. Overall the evolution in the distribution of orbital poles is much milder than in m12b and the changes happen more gradual in time mainly between 7.5 and 11 Gyrs, while in m12b it happen abruptly right after the satellites pericenter at 8.6 Gyrs. Even though the satellite in m12i has a low mass, we can see that the cnages in the orbital poles distribution happen while the satellite orbits the host. This confirms that lower mass satellites (like Sagittarius in the MW) can induce changes in their host halos.    
+
+In Figure~\ref{fig:corrfunc_30_60} we focus on the evolution of $\tilde{\omega}(\theta)$ at two specific angular scales $30^{\circ}$ and $60^{\circ}$. For m12b and the MWLMC it is very clear that the main changes at these angular scales happen right after the first pericenter. In the m12b halo the enhancement in $\tilde{\omega}(30^{\circ})$ reach it's peak at the second pericenter and later decrease. In the MW-LMC case the enhancement is more constant in time. Again highlighting that the halos in cosmological environment respond different that in isolation. 
+For m12b and the MW-LMC the enhancement is always larger at a $30^{\circ}$ than at $60^{\circ}$.  
+
+
+\section{Discussion}
+
+
+\subsection{Connecting to global measurements}\label{sec:global}
+
+- Orb Poles dispersion
+- Orb Poles mean
+
+\begin{figure*}[h]
+    \centering
+    \includegraphics[scale=0.6]{figures/figures_paper/OP_main_disp_outer_halo.pdf}
+    \caption{Caption}
+    \label{fig:OP_disp}
+\end{figure*}
+
+
+\subsection{satellites lopsidedness and flattening as a function of time}
+
+\subsection{Tracers}
+
+How well does the different tracers see the response. 
+
+\subsection{Longevity of the co-rotation pattern}
+
+\subsection{Co-rotation and planar structure}
+
+- Massive satellite coming along the filament
+
+\subsection{Angular momentum changes}
+
+What is the fraction of angular momentum of the host COM vs the satellites. 
+
+\subsection{Connection to Large Scale Structure and LG}
+
+- M31
+- Direction of the filaments
+
+
+\subsection{Comparison with cosmological simulations}
+
+- Environment is important
+- Massive satellites are important
+- Time is important
+
+\section*{Conclusions:}
+
+\begin{itemize}
+    \item Orbital poles distribution does not evolve significantly through the history of the Latte halos in absence of Massive Satellites.
+    \item Changes from massive satellite can be divided in three: 1) Clustering, 2) Transient and 3) Long-term. (Figure 6 and 7)
+    \item Changes in the orbital poles are mainly driven by the COM motion of the halo.
+    \item Hard to put the MW-LMC in context, the response of the dipole can change a lot depending on the exact orbit, mass ratios and density profiles. 
+    
+\end{itemize}
+
+%\section{Simulations summary}
+
+
+
+%\section{Disk alignment and orbital poles}
+
+
+
+
+
+%\section{Orbits of the satellites}
+
+
+
+
+%\section{Results}
+
+
+
+%\subsection{Satellites clustering}
+%\subsection{Halo stars clustering}
+
+%\subsection{Change in orbital poles of subhalos}
+%Jennas plots
+
+%\subsection{Satellite changes the orbital poles distribution}
+
+
+
+
+
+%\begin{figure}
+%    \centering
+%    \includegraphics[scale=0.7]{figures/smooth_ehacement_m12b_OP_faceon.png}
+%   \caption{OP enhancement between the 2nd peri and nfall snapshots fro for m12b. Black circle enotes the satellites orbital pole}
+%   \label{fig:enhancement}
+%\end{figure}
+
+
+
+
+\section{Filaments}
+%\subsection{Clustering due to the satellite!}
+
+
+
+
+%\section{Time evolution}
+
+%\section{Sag+LMC orbital poles}
+
+%\section{Vr vs Vtan as a function of time for all satellite?}
+
+
+
+
+%\section{Conclusions}
+
+\section{Acknowledgements}
+
+
+Lehman Garrison (Correlation functions)
+Tom Donlon (Data of accretion directions in FIRE)
+
+\bibliography{references} 
+\bibliographystyle{aasjournal}
+
+\appendix
+
+When talking about orbits 
+The most massive satellites in m12c and m12w are on very eccentric orbits whose pericenters are within 20 kpc and hence the effect on the orbital poles might be different to those produced by the LMC. 
+
+
+For the halos with massive satellites, changes from 40 km/s (m12c, m12f) all the way to 80 km/s (m12b, m12r) are observed. The time scales off these changes varies, in m12b and m12r the changes occur in a $\approx$2 Gyr scale. While for m12c and m12f the changes occur very rapidly $\approx$0.5 Gyrs. These difference in the time-scales and magnitudes of the differences in velocity is correlated with the pericenter and satellite-host mass ratios. Satellites that have a pericenter distance ~30-50 kpc and higher satellite-host mass ratios the changes in the host velocity are larger and last longer. (Maybe give more details about m12w). 
+
+In the DM particles and stars the evolution is not the same..
+
+
+
+
+
+\begin{table*}[h]
+    \centering
+    \begin{tabular}{c c c c c c c c }
+        \hline
+         Tracer type  &  & &  Latte halo  \\
+         \hline 
+         \hline
+         DM and star projections &  \href{https://users.flatironinstitute.org/~nico/m12b_DM_stars_projections.gif}{m12b} \\
+         OP DM 50-300 kpc no sat.  & \href{https://users.flatironinstitute.org/~nico/m12b_OP_DM_300_600.gif}{m12b}
+ & m12c & m12i & m12f & m12m & m12r &  m12w \\
+        OP DM 300-600 kpc no sat.  & \href{https://users.flatironinstitute.org/~nico/m12b_OP_faceon.gif}{m12b}
+         & m12c & m12i & m12f & m12m & m12r & m12w\\
+         OP subhalos 50-300 kpc no sat.  & \href{https://users.flatironinstitute.org/~nico/m12b_OP_subhalos_50_300.gif}{m12b}
+         & \href{https://users.flatironinstitute.org/~nico/m12c_OP_subhalos_50_300.gif}{m12c}& 
+         \href{https://users.flatironinstitute.org/~nico/m12i_OP_subhalos_50_300.gif}{m12i} & 
+         \href{https://users.flatironinstitute.org/~nico/m12f_OP_subhalos_50_300.gif}{m12f} & 
+         \href{https://users.flatironinstitute.org/~nico/m12m_subhalos_OP_mollweide_50_300.gif}{m12m} &
+         \href{https://users.flatironinstitute.org/~nico/m12r_subhalo_OP_mollweide_50_300.gif}{m12r} &
+
+         \href{https://users.flatironinstitute.org/~nico/m12w_OP_subhalos_50_300.gif}{m12w}\\
+         OP subhalos 300-600 kpc no sat.  & \href{https://users.flatironinstitute.org/~nico/m12b_OP_subhalos_300_600.gif}{m12b}
+         & \href{https://users.flatironinstitute.org/~nico/m12c_OP_subhalos_300_600.gif}{m12c} & 
+          \href{https://users.flatironinstitute.org/~nico/m12i_OP_subhalos_300_600.gif}{m12i} & 
+         \href{https://users.flatironinstitute.org/~nico/m12f_OP_subhalos_300_600.gif}{m12f} &
+          \href{https://users.flatironinstitute.org/~nico/m12m_subhalos_OP_mollweide_300_600.gif}{m12m} &
+          \href{https://users.flatironinstitute.org/~nico/m12f_OP_subhalos_300_600.gif}{m12r} & 
+         \href{https://users.flatironinstitute.org/~nico/m12w_OP_subhalos_300_600.gif}{m12w}\\
+         \hline
+        \end{tabular}
+    \caption{Summary of analysis performed in the m12 suite. Each link will display a movie in Mollweide coordinates with the OP in a desired galactocentric distance range.}
+    \label{tab:op_mollweide_movies}
+\end{table*}
+
+
+\begin{figure*}[H]
+    \centering
+    \includegraphics[scale=0.25]{figures/figures_paper/m12i_OP_dark_faceon_no_sat12_300.png}
+    \includegraphics[scale=0.25]{figures/figures_paper/m12i_OP_dark_faceon_no_sat12_350.png}
+    \includegraphics[scale=0.25]{figures/figures_paper/m12i_OP_dark_faceon_no_sat12_450.png}
+    
+    %\includegraphics[scale=0.25]{figures/figures_paper/m12i_OP_star_faceon_no_sat_300.png}
+    %\includegraphics[scale=0.25]{figures/figures_paper/m12i_OP_star_faceon_no_sat_350.png}
+    %\includegraphics[scale=0.25]{figures/figures_paper/m12i_OP_star_faceon_no_sat_450.png}
+    
+    
+    \includegraphics[scale=0.25]{figures/figures_paper/m12m_OP_dark_faceon_no_sat12_300.png}
+    \includegraphics[scale=0.25]{figures/figures_paper/m12m_OP_dark_faceon_no_sat12_400.png}
+    \includegraphics[scale=0.25]{figures/figures_paper/m12m_OP_dark_faceon_no_sat12_500.png}
+    
+    \caption{\textbf{Secular evolution of orbital poles:} All-sky orbital poles density distribution for Dark Matter (Grey color-map) and stellar particles (Purple color-map) between 50-300 kpc. Each column correspond to a different time in each halo evolution  $m12i$ (top panels) and $m12m$ (bottom panels). The orbital poles of the particles were computed after rotating the disk into the x-y plane and removing the particles from the most massive subhalo / satellite respectively. The density of orbital poles were computed with Healpy. The time evolution shows a the secular evolution of the orbital poles distribution. For m12i, the poles distribution evolve from the being close to the equator to a co-latitudinal distribution. For m12m the distribution remains almost constant in time.}
+    \label{fig:secular}
+\end{figure*}
+
+
+
+\begin{figure*}[H]
+    \centering
+    
+    \includegraphics[scale=0.25]{figures/figures_paper/m12c_OP_dark_faceon_no_sat_490.png}
+    \includegraphics[scale=0.25]{figures/figures_paper/m12c_OP_dark_faceon_no_sat_550.png}
+    \includegraphics[scale=0.25]{figures/figures_paper/m12c_OP_dark_faceon_no_sat_580.png}
+
+    \includegraphics[scale=0.25]{figures/figures_paper/m12w_OP_dark_faceon_no_sat12_330.png}
+    \includegraphics[scale=0.25]{figures/figures_paper/m12w_OP_dark_faceon_no_sat12_359.png}
+    \includegraphics[scale=0.25]{figures/figures_paper/m12w_OP_dark_faceon_no_sat12_400.png}
+
+    \includegraphics[scale=0.25]{figures/figures_paper/m12f_OP_dark_faceon_no_sat12_386.png}
+    \includegraphics[scale=0.25]{figures/figures_paper/m12f_OP_dark_faceon_no_sat_470.png}
+    \includegraphics[scale=0.25]{figures/figures_paper/m12f_OP_dark_faceon_no_sat_500.png}
+
+    %\includegraphics[scale=0.25]{figures/figures_paper/m12f_OP_star_faceon_no_sat_386.png}
+    %\includegraphics[scale=0.25]{figures/figures_paper/m12f_OP_star_faceon_no_sat_470.png}
+    %\includegraphics[scale=0.25]{figures/figures_paper/m12f_OP_star_faceon_no_sat_500.png}    
+   
+
+    \caption{\textbf{Transient perturbations:} m12c (top panels), m12w (middle panels), and, m12f (bottom panels) have massive satellites that induce transient perturbations in between the secular evolution in the orbital poles distributions of both stars and DM particles. For each of these halos we show orbital poles before pericenter (left column) at pericenter (middle panels), and after pericenter (right columns) }
+    \label{fig:my_label}
+\end{figure*}
+
+
+
+\begin{figure*}[H]
+    \centering
+    \includegraphics[scale=0.25]{figures/figures_paper/m12b_OP_dark_faceon_no_sat12_300.png}
+    \includegraphics[scale=0.25]{figures/figures_paper/m12b_OP_dark_faceon_no_sat12_386.png}
+    \includegraphics[scale=0.25]{figures/figures_paper/m12b_OP_dark_faceon_no_sat12_440.png}
+
+    %\includegraphics[scale=0.25]{figures/figures_paper/m12b_OP_star_faceon_no_sat_300.png}
+    %\includegraphics[scale=0.25]{figures/figures_paper/m12b_OP_star_faceon_no_sat_386.png}
+    %\includegraphics[scale=0.25]{figures/figures_paper/m12b_OP_star_faceon_no_sat_440.png}
+
+    \includegraphics[scale=0.25]{figures/figures_paper/m12r_OP_dark_faceon_no_sat12_450.png}
+    \includegraphics[scale=0.25]{figures/figures_paper/m12r_OP_dark_faceon_no_sat12_485.png}
+    \includegraphics[scale=0.25]{figures/figures_paper/m12r_OP_dark_faceon_no_sat12_520.png}
+
+    \caption{All-sky orbital poles density distribution for Dark Matter and star particles in $m12b$, $m12f$, and $m12r$.}
+    \label{fig:my_label}
+\end{figure*}
+
+
+\begin{figure*}[H]
+    \centering
+    \includegraphics[scale=0.5]{figures/figures_paper/m12b_corrfunc_histograms.png}
+    \caption{Temporal evolution of the correlation function for four Latte halos, m12b (1st row), m12f (2nd row), m12i (3rd row), and m12r (4th row). Each column shows the correlation function computed with DM particles, subhalos, star particles, and satellite galaxies. Red colors show an increase of probability for finding pairs at a given angular distance ($\theta$). The probabilities are roughly constant time, however, when a massive satellite is at pericenter the probability distribution increases at smaller angular distance.}
+    \label{fig:2d_corrfunc}
+\end{figure*}
+
+
+\begin{figure*}[H]
+    \centering
+    \includegraphics[scale=0.5]{figures/figures_paper/m12b_corrfunc_normed_histograms.png}
+    \caption{Normalized temporal evolution of the correlation function with respect to the snapshot at t=7 Gyrs. The probabilities are roughly constant time, however, when a massive satellite is at pericenter the probability distribution increases at angular distance between 15-75 degrees. The effect in stars is.}
+    \label{fig:2d_normed_corrfunc}
+\end{figure*}
+
+
+
+
+
+%\section{Next steps and ideas from collaborators:}
+
+%\begin{itemize}
+%    \item See if the massive satellite induces any lopsidedness in the  %distribution of satellites.
+    
+    
+%\end{itemize}
+
+%% This command is needed to show the entire author+affiliation list when
+%% the collaboration and author truncation commands are used.  It has to
+%% go at the end of the manuscript.
+%\allauthors
+
+%% Include this line if you are using the \added, \replaced, \deleted
+%% commands to see a summary list of all changes at the end of the article.
+%\listofchanges
+
+\end{document}
+
+% End of file `sample63.tex'.
+
