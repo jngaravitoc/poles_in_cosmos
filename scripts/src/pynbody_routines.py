@@ -66,18 +66,20 @@ def pynbody_subhalos(particles, mask=0):
        mask_array[mask_clean] = 0
        print(ndark, ndark_init, len(mask_array[mask_array==True]))
 
-    sub_stars = particles['star.number']
+    # Sub star removing satellite satellites with the mask_array
+    sub_stars = particles['star.number'][mask_array]
     stars = np.where(sub_stars!=-1)
     #ndark = len(particles['mass'])
-    nstar = len(particles['mass'][stars])
+    nstar = len(stars[0])
+    print('N satellites = {}'.format(nstar))
     halo_pynb = pynbody.new(dark=int(ndark), star=int(nstar), order='dark,star')
     halo_pynb.dark['pos'] = particles['host.distance'][mask_array]
     halo_pynb.dark['vel'] = particles['host.velocity'][mask_array]
     halo_pynb.dark['mass'] = particles['mass'][mask_array]
 
-    halo_pynb.star['pos'] = particles['host.distance'][stars]
-    halo_pynb.star['vel'] = particles['host.velocity'][stars]
-    halo_pynb.star['mass'] = particles['mass'][stars]
+    halo_pynb.star['pos'] = particles['host.distance'][mask_array][stars]
+    halo_pynb.star['vel'] = particles['host.velocity'][mask_array][stars]
+    halo_pynb.star['mass'] = particles['mass'][mask_array][stars]
     halo_pynb.dark['pos'].units = 'kpc'
     halo_pynb.dark['vel'].units = 'km s**-1'
     halo_pynb.dark['mass'].units = 'Msol'

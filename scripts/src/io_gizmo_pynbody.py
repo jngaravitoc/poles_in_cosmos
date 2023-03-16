@@ -55,11 +55,12 @@ import plotting as pl
 
 
 ## Tracking subhalos using their index at 300th snap (using only merger tree)
-def return_tracked_pos(halo_tree, tr_ind_at300, pynbody_halo=False):
+def return_tracked_pos(halo_tree, tr_ind_at_init, pynbody_halo=False, nsnaps=300):
     # Adapted from Arpit's function
-    h_index = tr_ind_at300
+    h_index = tr_ind_at_init
     tree_ind = []
-    for _ in range(300,601):
+    
+    for _ in range(nsnaps):
         tree_ind.append(h_index)
         h_index = halo_tree['descendant.index'][h_index]
     tree_ind = np.array(tree_ind)
@@ -78,11 +79,11 @@ def return_tracked_pos(halo_tree, tr_ind_at300, pynbody_halo=False):
 
     elif pynbody_halo == False:
 
-      return {'position': position,
-              'snaps' : nsnaps,
-              'mass' : mass,
-              'velocity' : velocity,
-             }
+        return {'position': position,
+                'snaps' : nsnaps,
+                'mass' : mass,
+                'velocity' : velocity,
+               }
 
 
 def poles_subhalos(snap, rmin=20, rmax=400, satellites=False):
@@ -108,7 +109,7 @@ def poles_subhalos(snap, rmin=20, rmax=400, satellites=False):
 # Get all the subhalos
 def get_halo_satellite(sim, mass_rank):
     sim_directory = "/mnt/ceph/users/firesims/fire2/metaldiff/{}_res7100/".format(sim)
-    m12_subhalos = halo.io.IO.read_catalogs('snapshot', 300, sim_directory)
+    m12_subhalos = halo.io.IO.read_catalogs('index', 300, sim_directory)
     halt = halo.io.IO.read_tree(simulation_directory=sim_directory)
     hsub = pr.pynbody_subhalos(m12_subhalos)
     sat_id = np.argsort(hsub.dark['mass'])[mass_rank]
@@ -176,7 +177,7 @@ class FIRE:
         sat_path = "/mnt/home/ecunningham/ceph/latte/m12w_res7100/massive_stream/dm_inds.npy"
         self.sat_ids = np.load(sat_path)
 
-    #elf.sat_ids = np.load(sat_path)
+    #self.sat_ids = np.load(sat_path)
     self.sim = sim
     self.rm_sat = remove_satellite
     self.rm_subs = remove_subs
@@ -188,7 +189,7 @@ class FIRE:
         assert self.rm_sat != self.only_sat, '! You have to either select satellite subs or remove it'
     
 
-  def rotated_halo(self, snap, part_sample=1):
+  def rotated_halo(self, snap, part_sample=1, rotate=True):
     """
     Reads a halo an return its particles data in faceon projection in pynbody halo format.
 
@@ -208,7 +209,7 @@ class FIRE:
     """
 
     # Read snapshot
-    p = ga.io.Read.read_snapshots(['dark', 'star'], 'snapshot', snap, self.sim_directory, 
+    p = ga.io.Read.read_snapshots(['dark', 'star'], 'index', snap, self.sim_directory, 
                               assign_hosts=True, particle_subsample_factor=1, sort_dark_by_id=True, assign_pointers=True)
    
     # Removing satellite substructure
@@ -241,7 +242,8 @@ class FIRE:
     hfaceon = pr.pynbody_halo(p, mask=mask_sub, masks=mask_subs)
     del(p)
 
-    pynbody.analysis.angmom.faceon(hfaceon, cen=(0,0,0))
+    if rotate == True:
+        pynbody.analysis.angmom.faceon(hfaceon, cen=(0,0,0))
 
     return hfaceon
 
@@ -257,9 +259,6 @@ class FIRE:
 
     Returns: 
 
-    TODO:
-    - Get smax automatically! 
-    - make sat_index_peak_mass an input paramter? 
     """
 
     # Read simulations tree 
@@ -272,13 +271,11 @@ class FIRE:
         self.sat_index_peak_mass = -2
         nsnaps = 600-self.smax+1
 
-
     elif self.sim == 'm12c':
         self.smax = 300
         # 0 is host
         self.sat_index_peak_mass = -4
         nsnaps = 600-self.smax+1
-
 
     elif self.sim == 'm12f':
         self.smax = 280
@@ -286,12 +283,12 @@ class FIRE:
         self.sat_index_peak_mass = -4
         nsnaps = 600-self.smax+1
 
-
     elif self.sim == 'm12i':
         # 0 is host
         self.sat_index_peak_mass = -11
         self.smax = 300
         nsnaps = 600-self.smax+1
+
     elif self.sim == 'm12m':
         # 0 is host
         self.sat_index_peak_mass = -19
@@ -303,7 +300,6 @@ class FIRE:
         # 0 is host
         self.sat_index_peak_mass = -2
         nsnaps = 600-self.smax+1
-
 
     elif self.sim == 'm12w':
         self.smax = 260 
@@ -336,14 +332,14 @@ class FIRE:
     return cat_idx
 
 
-  def subhalos_rotated(self, snap, sat_index=-2):
+  def subhalos_rotated(self, snap):
     """
-    Sat_index = -2 for m12b. Second massive subhhalo
+    Sat_index = -2 for m12b. Second massive subhhalo at snap 300
     """
-    p = ga.io.Read.read_snapshots(['dark', 'star'], 'snapshot', snap, self.sim_directory, 
+    p = ga.io.Read.read_snapshots(['dark', 'star'], 'index', snap, self.sim_directory, 
                               assign_hosts=True, particle_subsample_factor=1, sort_dark_by_id=True)
     #Building pynbody subhalos in halo format
-    subhalos = halo.io.IO.read_catalogs('snapshot', snap, self.sim_directory)
+    subhalos = halo.io.IO.read_catalogs('index', snap, self.sim_directory)
     # Tree
     halt = halo.io.IO.read_tree(simulation_directory=self.sim_directory)
 
@@ -361,7 +357,7 @@ class FIRE:
         hsub = pr.pynbody_subhalos(subhalos)
         hsub_faceon = hsub
 
-    subhalos_init = halo.io.IO.read_catalogs('snapshot', self.smax, self.sim_directory)
+    subhalos_init = halo.io.IO.read_catalogs('index', self.smax, self.sim_directory)
     hsub_init = pr.pynbody_subhalos(subhalos_init)
     # Satellite orbit
     sat_id = np.argsort(hsub_init.dark['mass'])[self.sat_index_peak_mass]
@@ -391,6 +387,12 @@ class FIRE:
         subhalos_snap = subhalos_ids[snap-self.smax]
         hsub = pr.pynbody_subhalos(m12_subhalos, mask=subhalos_snap)
       
+      if self.only_sat == True :
+        subhalos_ids = self.get_catids_satsubhalos()
+        print("-> Selecting satellite subhalos")
+        assert (snap-self.smax) >= 0, "snapshot number {} has to be greater than {}".format(snap, self.smax)
+        subhalos_snap = subhalos_ids[snap-self.smax]
+        hsub = pr.pynbody_subhalos(m12_subhalos, mask=subhalos_snap)
       return hsub
   
 
@@ -399,7 +401,7 @@ class FIRE:
       """
       Get satellites info from snap 300 to 600
       """
-      m12_subhalos = halo.io.IO.read_catalogs('snapshot', 300, self.sim_directory)
+      m12_subhalos = halo.io.IO.read_catalogs('index', 300, self.sim_directory)
       halt = halo.io.IO.read_tree(simulation_directory=self.sim_directory)
       hsub = pr.pynbody_subhalos(m12_subhalos)
       sat_id = np.argsort(hsub.dark['mass'])[mass_rank]
