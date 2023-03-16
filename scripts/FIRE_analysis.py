@@ -1,19 +1,18 @@
 """
-Scripts to analyze orbital poles & plot density maps in FIRE simulations
-author: jngaravitoc, Emily Cunningham
+Routines to use FIRE simulations
+author: jngaravitoc, with contributions from Emily Cunningham, Arpit Arora
+github: jngaravitoc
 
 02/2022 - 
 
+
+
 TODO:
 -----
-- Check routine to plot densities
-- Move plotting routines to nba
+- Select stars of the disk using Emily's routine [Done] ->  cant his only be
+  used in snap 600?
 
 """
-
-#!/usr/bin/env python
-# coding: utf-8
-
 
 
 import numpy as np
@@ -31,7 +30,6 @@ from datetime import datetime
 
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
-#import sklearn as sk
 
 import sys
 sys.path.append("/mnt/home/ecunningham/python")
@@ -41,136 +39,42 @@ import gizmo_analysis as ga
 import halo_analysis as ra
 import utilities as ut
 import nba
-import healpy as hp
-from  healpy.newvisufunc import projview, newprojplot
 from scipy.linalg import norm
 
 import pynbody
+from pynbody import transformation
+import pynbody_routines as pr
 
+## Tracking subhalos using their index at 300th snap (using only merger tree)
+def return_tracked_pos(halo_tree, tr_ind_at300, pynbody_halo=False):
+    # Adapted from Arpit's function
+    h_index = tr_ind_at300
+    tree_ind = []
+    for _ in range(300,601):
+        tree_ind.append(h_index)
+        h_index = halo_tree['descendant.index'][h_index]
+    tree_ind = np.array(tree_ind)
+    position = halo_tree['host.distance'][tree_ind]
+    nsnaps = halo_tree['snapshot'][tree_ind]
+    mass = halo_tree['mass'][tree_ind]
+    velocity = halo_tree['host.velocity'][tree_ind]
+    #vel_rad = halt['host.velocity.rad'][tree_ind]
+    #vel_tan = halt['host.velocity.tan'][tree_ind]
+    if pynbody_halo == True:
+        sat = {'position': position,
+               'mass': mass,
+               'velocity': velocity,
+            }
+        return pr.pynbody_satellite(sat)
 
-## Rotations 
+    elif pynbody_halo == False:
 
-def get_3d_rotation(vec1, vec2):
-    """
-    Computes the rotation matrix from going to vec1 to vec2
-    
-    """
-    assert np.dot(vec1, vec2) != -1, "Method not valid for vec1 = -vec2"
-    v1xv2 = np.cross(vec1, vec2)
-    v1dv2 = np.dot(vec1, vec2)
-    s = norm(v1xv2)
-    I = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
-    V = np.array([[0, -v1xv2[2], v1xv2[1]], [v1xv2[2], 0, -v1xv2[0]], [-v1xv2[1], v1xv2[0], 0]])
-    R = I + V + (np.dot(V, V) / (1+v1dv2))
-    return R
+      return {'position': position,
+              'snaps' : nsnaps,
+              'mass' : mass,
+              'velocity' : velocity,
+             }
 
-
-## Plotting routines 
-
-def cartessian_projection(pos, figname):
-    fig, ax = plt.subplots(1, 2, figsize=(10,4))
-    ax[0].hist2d(pos[:,0], pos[:,1],  bins=np.linspace(-100,100,800), norm=LogNorm())
-    ax[1].hist2d(pos[:,0], pos[:,2],  bins=np.linspace(-100,100,800), norm=LogNorm())
-    ax[0].set_xlabel("x[kpc]")
-    ax[0].set_ylabel("y[kpc]")
-    ax[1].set_xlabel("x[kpc]")
-    ax[1].set_ylabel("z[kpc]")
-    #ax[0].plot(orbit[:,0], orbit[:,1], c='r')
-    #ax[1].plot(orbit[:,1], orbit[:,2], c='r')
-    plt.savefig(figname, bbox_inches='tight')
-    plt.close()
-    return 0
-
-def mollweide_projection(l, b, l2, b2, title, bmin, bmax, nside,  smooth=5, **kwargs):
-
-    """
-    Makes mollweide plot using healpix
-    Parameters:
-    ----------- 
-    l : numpy.array
-    b : numpy.array
-    """
- 
-    
-    mwlmc_indices = hp.ang2pix(nside,  (90-b)*np.pi/180., l*np.pi/180.)
-    npix = hp.nside2npix(nside)
- 
-    idx, counts = np.unique(mwlmc_indices, return_counts=True)
-    degsq = hp.nside2pixarea(nside, degrees=True)
-    # fill the fullsky map
-    hpx_map = np.zeros(npix, dtype=int)
-    hpx_map[idx] = counts/degsq
-    map_smooth = hp.smoothing(np.log10(hpx_map+1), fwhm=smooth*np.pi/180)
-    
-  
-    fig, ax = plt.subplots(1, 1, figsize=(12, 5))
-    plt.close()
-    projview(
-    hpx_map,
-    coord=["G"],
-    graticule=True,
-    graticule_labels=True,
-    rot=(180, 0, 0),
-    unit=" ",
-    xlabel="Galactic Longitude (l) ",
-    ylabel="Galactic Latitude (b)",
-    cb_orientation="horizontal",
-    min=bmin,
-    max=bmax,
-    latitude_grid_spacing=45,
-    projection_type="mollweide",
-    title=title,)
-	
-    #newprojplot(theta=np.radians(90-(b2)), phi=np.radians(l2-120), marker="*", color="r", markersize=5 )
-    #newprojplot(theta=np.radians(90-(b2[0])), phi=np.radians(l2[0]-120), marker="*", color="r", markersize=5 )
-    #newprojplot(theta=np.radians(90-(b2[1])), phi=np.radians(l2[1]-120), marker="*", color="w", markersize=2 )
-    
-    if 'figname' in kwargs.keys():
-        print("* Saving figure in ", kwargs['figname'])
-        plt.savefig(kwargs['figname'], bbox_inches='tight')
-        plt.close()
-    return 0
-
-
-
-def rotate_halo(pos, vel):
-    """
-    Rotation of principal axis for m12b and peri -> snap 385 
-    Numbers from Emily Cunningham
-    """
-    #
-    halo_pos=np.array([32.908375,16.943731,8.137191])
-    halo_r=(np.sum(halo_pos**2)**0.5)
-    halo_rp=(np.sum(halo_pos[:2]**2)**0.5)
-    z_ang=np.arcsin(halo_pos[2]/halo_r)
-
-    halo_eigen_vec=halo_pos/halo_r
-    #print(np.arc)
-    x_ang=np.arccos(halo_pos[0]/halo_rp)
-    y_ang=np.arcsin(halo_pos[1]/halo_rp)
-
-    ##Note here that x_ang=y_ang=theta; rotation in x-y plane. Rotate in plane and then rotate Satellite down.
-    print("rotating halo with angles: ", x_ang, y_ang, z_ang)
-    
-    pos_part_rot=ut.coordinate.get_coordinates_rotated(pos, rotation_angles=[x_ang, 0., z_ang])
-    halo_pos_rot=ut.coordinate.get_coordinates_rotated(halo_pos, rotation_angles=[x_ang, 0., z_ang])
-
-   
-    vel_part_rot=ut.coordinate.get_coordinates_rotated(vel, rotation_angles=[x_ang, 0., z_ang])
-    halo_pos_rot=ut.coordinate.get_coordinates_rotated(halo_pos, rotation_angles=[x_ang, 0., z_ang])
-
-
-    # Satellite orbital poles
-    to_kpc_gyr = ((1*u.km/u.s).to(u.kpc/u.Gyr)).value
-    sat_vel=np.array([-181.44563,262.926,141.28804])*to_kpc_gyr
-    sat_pos=np.array([32.908375,16.943731,8.137191])
-    sat_pos_rot=ut.coordinate.get_coordinates_rotated(sat_pos, rotation_angles=[x_ang, 0., z_ang])
-    sat_vel_rot=ut.coordinate.get_coordinates_rotated(sat_vel, rotation_angles=[x_ang, 0., z_ang])
-    print("-> Satellite position and velocity", sat_pos, sat_vel)
-    return pos_part_rot, vel_part_rot # halo_pos_rot, sat_pos_rot, sat_vel_rot
-
-
-## Orbital poles routines
 
 class FIRE_analysis(object):
     def __init__(self, sim, rmin, rmax, part_type, analysis_type, outpath, figure_name, remove_subs, **kwargs):
@@ -238,7 +142,80 @@ class FIRE_analysis(object):
         #stars_host_distance=part['star'].prop('host.distance.principal')
         #stars_host_velocity=part['star'].prop('host.velocity.principal')*to_kpc_gyr
 
-        if  'star' in self.part_type:
+        if 'disk' in self.part_type:
+            part = ga.io.Read.read_snapshots(['dark', 'star'],'snapshot',
+                snap, self.simulation_directory, assign_hosts=True,
+                assign_orbits=True)
+
+            stars_host_distance=part['star'].prop('host.distance')
+            stars_host_velocity=part['star'].prop('host.velocity')*to_kpc_gyr
+            dm_host_distance=part['dark'].prop('host.distance')
+            dm_host_velocity=part['dark'].prop('host.velocity')*to_kpc_gyr
+
+            dm_host_mass=part['dark'].prop('mass')
+            stars_host_mass=part['star'].prop('mass')
+
+            #--- Disk stars
+
+            
+            #form_dist=part['star'].prop('form.host.distance.total')
+            #form_time=part['star'].prop('form.time')
+            disk_particles = np.where(stars_host_distance<30)[0]
+            #print(len(disk_particles))
+            pos_disk = stars_host_distance[disk_particles]
+            vel_disk = stars_host_velocity[disk_particles]
+            disk_mass = stars_host_mass[disk_particles]
+
+            #--- pynbody 
+            
+            f = pynbody_halo(stars_host_distance, stars_host_velocity,
+                stars_host_mass, dm_host_distance, dm_host_velocity,
+                dm_host_mass, pos_disk, vel_disk, disk_mass)
+            path="/mnt/home/nico/projects/poles_in_cosmos/scripts/"
+            #pynbody.plot.hist2d(f.stars[:,0], f.stars[:,1], make_plot=True,
+            #    cmap='Blues', filename=path+'pynbody_hist_plot.png')
+            print("here pynbody") 
+            center = pynbody.analysis.halo.center(f, mode='ssc')
+            #print("center", transformation.inverse_translate(center, [39762.54, 41743.92, 39791.35]))
+            #enter2 = pynbody.analysis.halo.center(f, mode='ssc', retcen=True)
+            #rint("center", center2)  
+            
+            center3 = pynbody.analysis.angmom.sideon(f, cen=(0,0,0))
+            ## todo -> load halo centers and make the first element  the halo
+            ## center and then revert and print the zeroth element. 
+            sim_center = np.loadtxt("m12b_center.txt")
+            f['pos'][0] = sim_center[snap]
+            print("here", sim_center[snap])
+            center3.revert()
+            halo_center_xy_plane = f['pos'][0]
+            #print(f['pos'][0])
+            
+            """
+            cartessian_projection(f.gas['pos'], "m12b_disk_pynbody_centered{:03d}.png".format(snap))
+            disk_kinematics = nba.kinematics.Kinematics(f.gas['pos'], f.gas['vel'])
+            disk_l_host, disk_b_host = disk_kinematics.pos_cartesian_to_galactic()
+            OP_disk_l_host, OP_disk_b_host = disk_kinematics.orbpole()
+            mollweide_projection(disk_l_host*180/np.pi, disk_b_host*180/np.pi, [0], [0], 
+                                 title="disk particles", bmin=30, bmax=1000,
+                                 nside=40, figname="m12b_mollweide_disk_pynbody_centered_{:03d}.png".format(snap))
+
+           
+            mollweide_projection(OP_disk_l_host, OP_disk_b_host, [0], [0], 
+                                 title="disk orbital poles", bmin=30, bmax=1000,
+                                 nside=40, figname="m12b_OP_disk_pynbody_centered_{:03d}.png".format(snap))
+
+            disk_kinematics_off = nba.kinematics.Kinematics(pos_disk, vel_disk)
+            disk_l_host_off, disk_b_host_off = disk_kinematics_off.pos_cartesian_to_galactic()
+            OP_disk_l_host_off, OP_disk_b_host_off = disk_kinematics_off.orbpole()
+            mollweide_projection(disk_l_host_off*180/np.pi, disk_b_host_off*180/np.pi, [0], [0], 
+                                 title="disk particles", bmin=30, bmax=1000,
+                                 nside=40,  figname="m12b_mollweide_disk_pynbody_off_centered_{:03d}.png".format(snap))
+
+            mollweide_projection(OP_disk_l_host_off, OP_disk_b_host_off, [0], [0], 
+                                 title="disk orbital poles", bmin=30, bmax=1000,
+                                 nside=40,  figname="m12b_OP_disk_pynbody_off_centered_{:03d}.png".format(snap))
+@           """
+        if 'star' in self.part_type:
             part = ga.io.Read.read_snapshots(self.part_type,'snapshot',
                 snap, self.simulation_directory, assign_hosts=True,
                 assign_orbits=True, assign_hosts_rotation=False)
@@ -250,8 +227,6 @@ class FIRE_analysis(object):
             stars_dist_cut = np.where((stars_dist>self.rmin) & (stars_dist<self.rmax)) 
             pos_stars, vel_stars = rotate_halo(stars_host_distance[stars_dist_cut],
                                                stars_host_velocity[stars_dist_cut])
-        
-
             if self.analysis_type == "orbital_poles":
                 print("-> Computing orbital poles for star particles")
                 stars_kinematics = nba.kinematics.Kinematics(pos_stars, vel_stars)
@@ -261,10 +236,10 @@ class FIRE_analysis(object):
                 mollweide_projection(stars_l_host*180/np.pi, stars_b_host*180/np.pi, [0], [0], 
                                      title=title_stars, bmin=self.bmin, bmax=self.bmax, nside=40, figname=stars_figname)
         
-    
+       
         # ** dark matter ** 
         if 'dark' in self.part_type:
-            part = ga.io.Read.read_snapshots(self.part_type,'snapshot',
+            part = ga.io.Read.read_snapshots(['dark', 'star'],'snapshot',
                 snap, self.simulation_directory, assign_hosts=True,
                 assign_orbits=True, assign_hosts_rotation=False,
                 sort_dark_by_id=True)
@@ -272,8 +247,29 @@ class FIRE_analysis(object):
             #dm_host_distance=part['dark'].prop('host.distance.principal')
             #dm_host_velocity=part['dark'].prop('host.velocity.principal')*to_kpc_gyr
         
+            stars_host_distance=part['star'].prop('host.distance')
+            stars_host_velocity=part['star'].prop('host.velocity')*to_kpc_gyr
             dm_host_distance=part['dark'].prop('host.distance')
             dm_host_velocity=part['dark'].prop('host.velocity')*to_kpc_gyr
+
+            dm_host_mass=part['dark'].prop('mass')
+            stars_host_mass=part['star'].prop('mass')
+            
+            disk_particles = np.where(stars_host_distance<30)[0]
+            #print(len(disk_particles))
+            pos_disk = stars_host_distance[disk_particles]
+            vel_disk = stars_host_velocity[disk_particles]
+            disk_mass = stars_host_mass[disk_particles]
+            
+            f = pynbody_halo(stars_host_distance, stars_host_velocity,
+                stars_host_mass, dm_host_distance, dm_host_velocity,
+                dm_host_mass, pos_disk, vel_disk, disk_mass)
+
+            path="/mnt/home/nico/projects/poles_in_cosmos/scripts/"
+            #pynbody.plot.hist2d(f.stars[:,0], f.stars[:,1], make_plot=True,
+            #    cmap='Blues', filename=path+'pynbody_hist_plot.png')
+            center = pynbody.analysis.halo.center(f, mode='ssc')
+            pynbody.analysis.angmom.faceon(f, cen=(0,0,0))
 	    
             #cartessian_projection(dm_host_distance, figure_name_dark+"with")
             # remove substructue. 
@@ -293,40 +289,44 @@ class FIRE_analysis(object):
  
             dm_dist = np.sqrt(np.sum(dm_host_distance**2, axis=1))
             dm_dist_cut = np.where((dm_dist>self.rmin) & (dm_dist<self.rmax)) 
-            pos_dm, vel_dm = rotate_halo(dm_host_distance[dm_dist_cut], dm_host_velocity[dm_dist_cut])
+            #os_dm, vel_dm = rotate_halo(dm_host_distance[dm_dist_cut], dm_host_velocity[dm_dist_cut])
 
             if self.analysis_type == "orbital_poles":
-                dm_m12b_kinematics_2 = nba.kinematics.Kinematics(pos_dm, vel_dm)
+                dm_m12b_kinematics_2 = nba.kinematics.Kinematics(dm_host_distance[dm_dist_cut], dm_host_velocity[dm_dist_cut])
                 dm_l_host, dm_b_host = dm_m12b_kinematics_2.pos_cartesian_to_galactic()
+                OP_dm_l_host, OP_dm_b_host = dm_m12b_kinematics_2.orbpole()
                 dm_figname = self.outpath + "{}_".format(self.sim) + self.figure_name + "_{:03d}.png".format(snap)
+                dm_figname2 = self.outpath + "OP_{}_".format(self.sim) + self.figure_name + "_{:03d}.png".format(snap)
                 title_dark = "{} dark; {}-{} kpc; t={:.2f} Gyr".format(self.sim, self.rmin, self.rmax, self.times[snap])
                 mollweide_projection(dm_l_host*180/np.pi, dm_b_host*180/np.pi,
                     [0],[0], title=title_dark, bmin=self.bmin,  bmax=self.bmax,
                     nside=40, figname=dm_figname)
 
+                mollweide_projection(OP_dm_l_host, OP_dm_b_host,
+                    [0],[0], title=title_dark, bmin=self.bmin,  bmax=self.bmax,
+                    nside=40, figname=dm_figname2)
+
             if self.analysis_type == "shape":
                 shape = pynbody.analysis.halo.halo_shape(pos_dm, N=100, rin=20, rout=500, bins='equal')
                 #dm_figname = self.outpath + "{}_".format(self.sim) + self.figure_name + "_{:03d}.png".format(snap)
                 title_dark = "{} dark {}-{} kpc".format(self.sim, self.rmin,  self.rmax)
-
-        return 0
-
+        
+        return halo_center_xy_plane
+        
     def callback(self, result):
-        #ith open(self.outpath+"text.txt", 'a') as f:
-        #self.write("{0}\n".format(result))
-        print('here')
+        with open(self.outpath+"text.txt", 'a') as f:
+            f.write("{0}\n".format(result))
+        #print('here')
 
     def __call__(self, task):
         return self.analyze_snapshot(task)
 
-def main(pool, sim, rmin, rmax, part_type, analysis_type, outpath, figure_name,  remove_subs, **kwargs):
-   
-
+def main(pool, sim, rmin, rmax, part_type, analysis_type, outpath, figure_name,  remove_subs, **kwargs): 
     bmin = kwargs['bmin']
     bmax = kwargs['bmax']
 
     worker = FIRE_analysis(sim, rmin, rmax, part_type, analysis_type, outpath, figure_name, remove_subs, bmin=bmin, bmax=bmax)
-
+    print(worker)
     tasks = np.arange(snap_init, snap_final, delta_snap)
 
     for r in pool.map(worker, tasks, callback=worker.callback):
@@ -420,7 +420,8 @@ if __name__ == "__main__":
        #args.bmax=7
        #args.bmax=9
     elif args.part_type == 2:
-       part_type=['star']
+       #part_type=['star']
+       part_type=['disk']
        #args.bmin=0
        #args.bmax=5
 
@@ -437,6 +438,8 @@ if __name__ == "__main__":
     delta_snap = 1
     analysis_type = "orbital_poles"
 
+    halo_center_xy_plane = np.zeros(601)
     compute_poles = main(pool, args.sim, args.rmin, args.rmax, part_type,
                          analysis_type, args.outpath, args.figure_name,
                          args.remove_subs, bmin=args.bmin, bmax=args.bmax)
+
