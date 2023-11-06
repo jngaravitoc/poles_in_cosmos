@@ -182,15 +182,16 @@ def mollweide_projection(l, b, l2, b2, title, bmin, bmax, nside, smooth, q=[0], 
               },
       )
 	
-    newprojplot(theta=np.radians(90-(b2)), phi=np.radians(l2), marker="o", color="yellow", markersize=5, lw=0, mfc='none')
+    newprojplot(theta=np.radians(90-(b2)), phi=np.radians(l2), marker="o", color="yellow", markersize=15, lw=0, mfc='none')
     if 'l3' in kwargs.keys():
         l3 = kwargs['l3']
         b3 = kwargs['b3']
-        newprojplot(theta=np.radians(90-(b3)), phi=np.radians(l3), marker="o", color="yellow", markersize=5, lw=0)
-    elif 'l4' in kwargs.keys():
+        newprojplot(theta=np.radians(90-(b3)), phi=np.radians(l3), marker="o", color="yellow", markersize=15, lw=0)
+    if 'l4' in kwargs.keys():
         l4 = kwargs['l4']
         b4 = kwargs['b4']
-        newprojplot(theta=np.radians(90-(b4)), phi=np.radians(l4), marker="*", color="r", markersize=8, lw=0)
+        print('here')
+        newprojplot(theta=np.radians(90-(b4)), phi=np.radians(l4), marker="*", color="deeppink", markersize=25, lw=0)
 
     #newprojplot(theta=np.radians(90-(b2[0])), phi=np.radians(l2[0]-120), marker="*", color="r", markersize=5 )
     #newprojplot(theta=np.radians(90-(b2[1])), phi=np.radians(l2[1]-120), marker="*", color="w", markersize=2 )
