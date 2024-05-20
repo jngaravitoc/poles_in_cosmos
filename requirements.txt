@@ -1,0 +1,29 @@
+astro-nba==0.1
+astropy==6.1.0
+astropy-iers-data==0.2024.5.20.0.29.40
+contourpy==1.2.1
+Corrfunc==2.5.2
+cycler==0.12.1
+Cython==3.0.10
+fonttools==4.51.0
+future==1.0.0
+gizmo_analysis @ file:///mnt/home/nico/codes/gizmo_analysis
+h5py==3.9.0
+halo_analysis @ file:///mnt/home/nico/codes/halo_analysis
+healpy==1.16.6
+kiwisolver==1.4.5
+matplotlib==3.9.0
+numpy==1.26.4
+packaging==24.0
+pillow==10.3.0
+progressbar33==2.4
+pyerfa==2.0.1.4
+pyGadgetReader==2.6
+pynbody==1.6.0
+pyparsing==3.1.2
+python-dateutil==2.9.0.post0
+PyYAML==6.0.1
+scipy==1.13.0
+six==1.16.0
+utilities @ file:///mnt/home/nico/codes/utilities
+wurlitzer==3.1.0
