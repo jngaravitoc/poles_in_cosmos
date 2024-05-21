@@ -19,6 +19,9 @@ python -m pip install -r requirements.txt
 
 ## Visualizations 
 
+## Docs
+
+The latex document alongside with the peer-review referee report can be found in the `docs` folder
 
 ## Reference & Attribtion 
 
