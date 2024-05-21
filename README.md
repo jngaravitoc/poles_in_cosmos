@@ -1,6 +1,6 @@
 # Poles in cosmos
 
-Repository of the paper [https://arxiv.org/abs/2311.11359 ](On the co-rotation of Milky Way satellites: LMC-mass satellites induce apparent motions in outer halo tracers). 
+Repository of the paper [On the co-rotation of Milky Way satellites: LMC-mass satellites induce apparent motions in outer halo tracers](https://arxiv.org/abs/2311.11359). 
 
 ## Code usage
 
