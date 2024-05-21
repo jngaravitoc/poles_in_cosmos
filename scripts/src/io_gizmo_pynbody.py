@@ -55,14 +55,55 @@ import plotting as pl
 
 
 ## Tracking subhalos using their index at 300th snap (using only merger tree)
-def return_tracked_pos(halo_tree, tr_ind_at_init, pynbody_halo=False, nsnaps=300):
+def return_tracked_pos(halo_tree, tr_ind_at_init, pynbody_halo=False, init_snap=300, final_snap=600):
+    # Adapted from Arpit's function
+    h_index = tr_ind_at_init
+    tree_ind = []
+    tree_ind.append(h_index) 
+    for _ in range(init_snap, final_snap):
+        try :
+            h_index = halo_tree['descendant.index'][h_index]
+        except IndexError :
+            break 
+        tree_ind.append(h_index)
+
+    tree_ind = np.array(tree_ind)
+    positive = np.where(tree_ind>0)
+    tree_ind = tree_ind[positive]
+    position = halo_tree['host.distance'][tree_ind]
+    nsnaps = halo_tree['snapshot'][tree_ind]
+    mass = halo_tree['mass'][tree_ind]
+    velocity = halo_tree['host.velocity'][tree_ind]
+    cat_ind = halo_tree['catalog.index'][tree_ind]
+    
+    if pynbody_halo == True:
+        sat = {'position': position,
+               'mass': mass,
+               'velocity': velocity,
+               'treeind' : tree_ind, 
+            } 
+        return pr.pynbody_satellite(sat, treeind='treind')
+
+    elif pynbody_halo == False:
+
+        return {'position': position,
+                 'mass' : mass,
+                'velocity' : velocity,
+                'treeind' : tree_ind,
+                'catind' : cat_ind,
+                'snapshot' : nsnaps,
+               }
+
+
+## Tracking subhalos using their index at 300th snap (using only merger tree)
+def return_tracked_pos_back(halo_tree, tr_ind_at_init, pynbody_halo=False, nsnaps=300):
     # Adapted from Arpit's function
     h_index = tr_ind_at_init
     tree_ind = []
     
     for _ in range(nsnaps):
         tree_ind.append(h_index)
-        h_index = halo_tree['descendant.index'][h_index]
+        h_index = halo_tree['progenitor.main.index'][h_index]
     tree_ind = np.array(tree_ind)
     position = halo_tree['host.distance'][tree_ind]
     nsnaps = halo_tree['snapshot'][tree_ind]
@@ -84,11 +125,11 @@ def return_tracked_pos(halo_tree, tr_ind_at_init, pynbody_halo=False, nsnaps=300
                 'mass' : mass,
                 'velocity' : velocity,
                }
-
-
+    
+    
 def poles_subhalos(snap, rmin=20, rmax=400, satellites=False):
     f = 1* (u.km/u.s).to(u.kpc/u.Gyr)
-    m12_halo = halo.io.IO.read_catalogs('snapshot', snap, sim_directory)
+    m12_halo = halo.io.IO.read_catalogs('index', snap, sim_directory)
     dist = np.sqrt(np.sum(m12_halo['host.distance']**2, axis=1))
     rcut = np.where((dist>rmin) & (dist<rmax))
                     
@@ -135,27 +176,29 @@ class FIRE:
     self.sim_directory = "/mnt/ceph/users/firesims/fire2/metaldiff/{}_res7100/".format(sim)
     
     if sim == 'm12c':
-        sat_path = '/mnt/home/ecunningham/ceph/latte/{}_res7100/massive_stream/dm_inds.npy'.format(sim)
+        sat_path = '../data/m12_satellite_indices/m12c/dm_inds.npy'
+        stars_path = '../data/m12_satellite_indices/m12c/new_z0_inds.npy'
         self.sat_ids = np.load(sat_path) 
+        self.stars_ids = np.load(stars_path)
     
     elif sim == 'm12f':
-        sat_path = '/mnt/home/ecunningham/ceph/latte/m12f_res7100/massive_stream/dm_particle_inds.npy'
-        stars_path = '/mnt/home/ecunningham/ceph/latte/{}_res7100/massive_stream/z0_stream_inds.npy'.format(sim)
+        sat_path = '../data/m12_satellite_indices/m12f/dm_particle_inds.npy'
+        stars_path = '../data/m12_satellite_indices/m12f/z0_stream_inds.npy'
         self.stars_ids = np.load(stars_path)
         self.sat_ids = np.load(sat_path) 
 
     elif sim == 'm12b':
-        sat_path = '/mnt/home/ecunningham/ceph/latte/{}_res7100/massive_stream/dm_inds.npy'.format(sim)
+        sat_path = '../data/m12_satellite_indices/m12b/dm_inds.npy'
         subs_path = '/mnt/home/nico/ceph/FIRE/{}_385_unbound_dark_indices.npy'.format(sim)
         self.subs_ids = np.load(subs_path)
-        stars_path = '/mnt/home/ecunningham/ceph/latte/{}_res7100/massive_stream/new_z0_inds.npy'.format(sim)
+        stars_path = '../data/m12_satellite_indices/m12b/new_z0_inds.npy'
         self.stars_ids = np.load(stars_path)
         self.sat_ids = np.load(sat_path) 
 
     elif sim == 'm12r':
-        sat_path = '/mnt/home/ecunningham/ceph/latte/{}_res7100/dm_inds_m1.npy'.format(sim)
-        sat_path2 = '/mnt/home/ecunningham/ceph/latte/{}_res7100/dm_inds_m2.npy'.format(sim)
-        sat_path3 = '/mnt/home/ecunningham/ceph/latte/{}_res7100/dm_inds_m3.npy'.format(sim)
+        sat_path = '../data/m12_satellite_indices/m12r/dm_inds_m1.npy'
+        sat_path2 = '../data/m12_satellite_indices/m12r/dm_inds_m2.npy'
+        sat_path3 = '../data/m12_satellite_indices/m12r/dm_inds_m3.npy'
         
         sat_ids1 = np.load(sat_path)
         sat_ids2 = np.load(sat_path2)
@@ -164,18 +207,22 @@ class FIRE:
         self.sat_ids = np.hstack((sat_ids, sat_ids3))
 
     elif sim == 'm12i':
-        sat_path = '/mnt/home/ecunningham/ceph/latte/m12i_res7100/arpit_merger/bound_dm_inds_356.npy'.format(sim)
-        stars_path = '/mnt/home/ecunningham/ceph/latte/m12i_res7100/arpit_merger/z0_stream_inds.npy'.format(sim)
+        sat_path = '../data/m12_satellite_indices/m12i/bound_dm_inds_356.npy'
+        stars_path = '../data/m12_satellite_indices/m12i/z0_stream_inds.npy'
         self.stars_ids = np.load(stars_path)
         self.sat_ids = np.load(sat_path) 
    
     elif sim == 'm12m':
-        sat_path = "/mnt/home/ecunningham/ceph/latte/m12m_res7100/massive_stream/dm_inds.npy"
+        sat_path = "../data/m12_satellite_indices/m12m/dm_inds.npy"
+        stars_path = '../data/m12_satellite_indices/m12m/new_z0_inds.npy'
         self.sat_ids = np.load(sat_path)
+        self.stars_ids = np.load(stars_path)
 
     elif sim == 'm12w':
-        sat_path = "/mnt/home/ecunningham/ceph/latte/m12w_res7100/massive_stream/dm_inds.npy"
+        sat_path = "../data/m12_satellite_indices/m12w/dm_inds.npy"
+        stars_path = '../data/m12_satellite_indices/m12w/new_z0_inds.npy'
         self.sat_ids = np.load(sat_path)
+        self.stars_ids = np.load(stars_path)
 
     #self.sat_ids = np.load(sat_path)
     self.sim = sim
@@ -370,14 +417,19 @@ class FIRE:
     del(p)
 
     faceon, edgeon = pr.make_pynbody_rotations(h_rotations)
-
-    pynbody.transformation.transform(hsub_faceon, faceon)
-    pynbody.transformation.transform(satellite_faceon, faceon)
+    print(edgeon)
+    array_rot = np.array([0, 1, 0]) @ edgeon 
+    f = open("m12b_rotation.txt", "a")
+    np.savetxt(f, array_rot)
+    f.write("\n")
+    f.close()
+    #pynbody.transformation.transform(hsub_faceon, faceon)
+    #pynbody.transformation.transform(satellite_faceon, faceon)
   
     return hsub_faceon, satellite_faceon
   
   def subhalos(self, snap):
-      m12_subhalos = halo.io.IO.read_catalogs('snapshot', snap, self.sim_directory)
+      m12_subhalos = halo.io.IO.read_catalogs('index', snap, self.sim_directory)
       hsub = pr.pynbody_subhalos(m12_subhalos)
       
       if self.rm_sat == True :
