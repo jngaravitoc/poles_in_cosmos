@@ -5,6 +5,7 @@ Dependencies:
   - Matplitlib
   - Healpy
   - pynbody 
+  - nba 
 
 author: Nico Garavito-Camargo
 github: jngaravitoc
@@ -15,17 +16,17 @@ github: jngaravitoc
 
 
 import numpy as np
+import matplotlib
 import matplotlib.pyplot as plt
-import pynbody
 import sys
-from pynbody import filt
 from astropy import units as u
-import nba
 import healpy as hp
 from healpy.newvisufunc import projview, newprojplot
+import pynbody
+from pynbody import filt
+import nba
 
-sys.path.append("/mnt/home/ecunningham/python")
-plt.style.use('~/matplotlib.mplstyle')
+plt.style.use('../matplotlib.mplstyle')
 plt.rcParams['font.size'] = 35
 
 def multipanel_plot(hf, hs, satellite_faceon, snap, sim, figname):
@@ -114,6 +115,7 @@ def multipanel_plot(hf, hs, satellite_faceon, snap, sim, figname):
     ax[0][2].set_ylim(-50, 50)
     ax[1][2].set_ylim(-50, 50)
     plt.savefig(figname + "_{:03d}.png".format(snap), bbox_inches='tight')
+    plt.savefig(figname + "_trans_{:03d}.png".format(snap), bbox_inches='tight', transparent=True)
     plt.close()
     
     
@@ -150,9 +152,9 @@ def mollweide_projection(l, b, l2, b2, title, bmin, bmax, nside, smooth, q=[0], 
     map_smooth = hp.smoothing(hpx_map, fwhm=smooth*np.pi/180)
     
     if 'cmap' in kwargs.keys():
-        cmap = kwargs['cmap']
+        cmap = matplotlib.colormaps.get_cmap(kwargs['cmap'])
     else:
-        cmap='viridis'
+        cmap = matplotlib.colormaps.get_cmap("viridis")
     fig, ax = plt.subplots(1, 1, figsize=(8, 4))
     plt.close()
     projview(
@@ -182,16 +184,16 @@ def mollweide_projection(l, b, l2, b2, title, bmin, bmax, nside, smooth, q=[0], 
               },
       )
 	
-    newprojplot(theta=np.radians(90-(b2)), phi=np.radians(l2), marker="o", color="yellow", markersize=15, lw=0, mfc='none')
+    newprojplot(theta=np.radians(90-(b2)), phi=np.radians(l2), marker="o", color="deeppink", markersize=8, lw=0, mfc='none')
     if 'l3' in kwargs.keys():
         l3 = kwargs['l3']
         b3 = kwargs['b3']
-        newprojplot(theta=np.radians(90-(b3)), phi=np.radians(l3), marker="o", color="yellow", markersize=15, lw=0)
+        newprojplot(theta=np.radians(90-(b3)), phi=np.radians(l3), marker="o", color="deeppink", markersize=8, lw=0)
     if 'l4' in kwargs.keys():
         l4 = kwargs['l4']
         b4 = kwargs['b4']
         print('here')
-        newprojplot(theta=np.radians(90-(b4)), phi=np.radians(l4), marker="*", color="deeppink", markersize=25, lw=0)
+        newprojplot(theta=np.radians(90-(b4)), phi=np.radians(l4), marker="D", color="darkblue", markersize=14, lw=0)
 
     #newprojplot(theta=np.radians(90-(b2[0])), phi=np.radians(l2[0]-120), marker="*", color="r", markersize=5 )
     #newprojplot(theta=np.radians(90-(b2[1])), phi=np.radians(l2[1]-120), marker="*", color="w", markersize=2 )
@@ -224,5 +226,6 @@ def plot_2dcorrfunc(w, w0, t0, t1, title, figname, hlines=[],  vmin=-0.1, vmax=0
     for n in range(len(hlines)):
         ax.axhline(hlines[n], ls='--', c='k', lw=1)
 
-    plt.savefig(figname, bbox_inches='tight', dpi=300)
+    plt.savefig(figname+".png", bbox_inches='tight', dpi=300)
+    plt.savefig(figname+".pdf", bbox_inches='tight', dpi=300)
 

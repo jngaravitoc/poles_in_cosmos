@@ -287,12 +287,14 @@ class FIRE:
 
     #Building pynbody halo format
     hfaceon = pr.pynbody_halo(p, mask=mask_sub, masks=mask_subs)
+    hsideon = pr.pynbody_halo(p, mask=mask_sub, masks=mask_subs)
     del(p)
 
     if rotate == True:
         pynbody.analysis.angmom.faceon(hfaceon, cen=(0,0,0))
+        pynbody.analysis.angmom.sideon(hsideon, cen=(0,0,0))
 
-    return hfaceon
+    return hfaceon, hsideon
 
 
   def get_catids_satsubhalos(self):
@@ -383,15 +385,20 @@ class FIRE:
     """
     Sat_index = -2 for m12b. Second massive subhhalo at snap 300
     """
+    # Get the particle data 
+
     p = ga.io.Read.read_snapshots(['dark', 'star'], 'index', snap, self.sim_directory, 
                               assign_hosts=True, particle_subsample_factor=1, sort_dark_by_id=True)
+    
     #Building pynbody subhalos in halo format
     subhalos = halo.io.IO.read_catalogs('index', snap, self.sim_directory)
     # Tree
     halt = halo.io.IO.read_tree(simulation_directory=self.sim_directory)
 
-
     subhalos_ids = self.get_catids_satsubhalos()
+
+    # Remove satellite subhalos 
+
     if self.rm_sat == True :
         print("-> Removing satellite subhalos")
         assert (snap-self.smax) >= 0, "snapshot number {} has to be greater than {}".format(snap, self.smax)
@@ -404,8 +411,10 @@ class FIRE:
         hsub = pr.pynbody_subhalos(subhalos)
         hsub_faceon = hsub
 
+    
     subhalos_init = halo.io.IO.read_catalogs('index', self.smax, self.sim_directory)
     hsub_init = pr.pynbody_subhalos(subhalos_init)
+    
     # Satellite orbit
     sat_id = np.argsort(hsub_init.dark['mass'])[self.sat_index_peak_mass]
     sat_tree_id = subhalos_init['tree.index'][sat_id]
@@ -417,14 +426,17 @@ class FIRE:
     del(p)
 
     faceon, edgeon = pr.make_pynbody_rotations(h_rotations)
+
+    # What are we printing the matrix?
     print(edgeon)
     array_rot = np.array([0, 1, 0]) @ edgeon 
     f = open("m12b_rotation.txt", "a")
     np.savetxt(f, array_rot)
     f.write("\n")
     f.close()
-    #pynbody.transformation.transform(hsub_faceon, faceon)
-    #pynbody.transformation.transform(satellite_faceon, faceon)
+
+    pynbody.transformation.transform(hsub_faceon, faceon)
+    pynbody.transformation.transform(satellite_faceon, faceon)
   
     return hsub_faceon, satellite_faceon
   
