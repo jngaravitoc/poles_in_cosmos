@@ -23,7 +23,7 @@ python -m pip install -r requirements.txt
 
 The latex document alongside with the peer-review referee report can be found in the `docs` folder
 
-## Reference & Attribtion 
+## Reference & Attribution 
 
 If you make use of this code in your research, please cite: 
 
