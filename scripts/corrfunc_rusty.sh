@@ -3,7 +3,7 @@
 #SBATCH --mail-type=END,FAIL
 #SBATCH --mail-user=ngaravito@flatironinstitute.org
 #SBATCH --time=24:00:00
-#SBATCH --job-name 50_300_corrfunc_dm_m12r
+#SBATCH --job-name 50_150_corrfunc_stars_m12b
 #SBATCH --array=0-30 -N1 --ntasks-per-node=1 
 #SBATCH -e stderr.%j.%A.%a.%N.txt
 #SBATCH -o stdout.%j.%A.%a.%N.txt
@@ -24,5 +24,3 @@ START_NUM=$(( ($SLURM_ARRAY_TASK_ID * 10) + 300))
 END_NUM=$(($START_NUM+10))
 
 python  /mnt/home/nico/projects/poles_in_cosmos/scripts/src/correlation_functions_particles.py $START_NUM $END_NUM $SLURM_CPUS_ON_NODE
-
-

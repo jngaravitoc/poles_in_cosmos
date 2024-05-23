@@ -15,7 +15,7 @@ from astropy.coordinates import Angle
 import sys
 import pynbody
 
-sys.path.append("/mnt/home/ecunningham/python")
+#sys.path.append("/mnt/home/ecunningham/python")
 plt.style.use('~/matplotlib.mplstyle')
 
 import gizmo_analysis as ga
@@ -106,8 +106,8 @@ if __name__ == "__main__":
     nbins = 180
     #nbins = 60
     rmin=50
-    rmax=300
-    sim='m12r'
+    rmax=150
+    sim='m12b'
     auto = False
     sats = True
     ptype = 'dark'
@@ -177,7 +177,7 @@ if __name__ == "__main__":
  
     print(np.nanmean(lsat), np.nanmean(bsat))
 
-    hfaceon = data.rotated_halo(snap_init)
+    hfaceon, hsideon = data.rotated_halo(snap_init)
 
     if ptype == 'dark':
         dist = np.sqrt(np.sum(hfaceon.dark['pos']**2, axis=1))
@@ -200,11 +200,12 @@ if __name__ == "__main__":
     wmatrix_s[0] = w0s
     print("-> Done")
     
-    pl.multipanel_plot(hfaceon, hfaceon, subhalos, snap_init, sim, "{}_test".format(sim))
+    #pl.multipanel_plot(hfaceon, hfaceon, subhalos, snap_init, sim, "{}_test".format(sim))
         
 
     for k in range(snap_init, snap_final, 1):
-        hfaceon = data.rotated_halo(k)
+        hfaceon, hsideon = data.rotated_halo(k)
+        #pl.multipanel_plot(hfaceon, hsideon, subhalos, k, sim, "{}_test".format(sim))
         
         if ptype == "dark":
             dist = np.sqrt(np.sum(hfaceon.dark['pos']**2, axis=1))
