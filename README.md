@@ -1,6 +1,7 @@
 # Poles in cosmos
 
 Repository of the paper [On the co-rotation of Milky Way satellites: LMC-mass satellites induce apparent motions in outer halo tracers](https://arxiv.org/abs/2311.11359). 
+Slides from my talk at the conferece "The Milky Way is not an island" in Sesto on Januray 2024 can be found [here](https://docs.google.com/presentation/d/1mxT553FY6iH8y2BURP4tizECVm1-0GhYMMEPOfBvgyI/edit?usp=sharing)
 
 ## Code usage
 
@@ -23,7 +24,7 @@ python -m pip install -r requirements.txt
 
 The latex document alongside with the peer-review referee report can be found in the `docs` folder
 
-## Reference & Attribtion 
+## Reference & Attribution 
 
 If you make use of this code in your research, please cite: 
 
