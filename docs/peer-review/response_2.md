@@ -19,8 +19,17 @@ all the comments from the referee's report.
 
 We have updated all the analysis in the paper and constrained it to 50-150 kpc to
 be closer to what is expected in cosmological simulations. We updated Figures:
-5-9 in the main text. We adjust the texts accordingly. In Figure 7 we decided to also 
-leave the lines corresponding to 50-300 kpc to compare how much the results change. 
+5-9 in the main text. We adjust the texts accordingly as highlighted in red. 
+In Figure 5 the changes are mainly in the density of poles, however, the distribution of
+poles is still consistent with that from 50-300 kpc. This is because there are not that
+many DM particles in the outer halo. This is quantified further in Figure 6 where 
+the angular correlation function shows how the main changes occur at the 
+pericentric passages of the satellite. The main changes are that before in m12b (left panel)
+the correlation is higher at lower angular scales (<20 degrees), this was not the case
+when we were looking at distances beyond 150 kpc. Yet, the quantitavley the enhacement in the correlation function 
+are similar to the 300 kpc case as shown in Figure 7. The main changes we found where in 
+Figure 8 where the mean of the orbital poles change, but the overall trend is similar. The main difference is in
+the mean of the longitudinal orbital poles now reaches the maximum at the first pericenter. 
 
 
 > 2) Regarding the comparison to observed satellites, the results of Pawlowski et
