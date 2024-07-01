@@ -11,34 +11,42 @@ all the comments from the referee's report.
 > for distances up to 300 kpc. As discussed in my previous report, the
 > applicability of the reported findings when interpreting the observed Milky Way
 > satellite system, for which most reliable orbital poles are restricted to
-> distances below 150-200 kpc, requires comparing similar distance ranges. Thus,
+> distances below 150-200 kpc, require comparing similar distance ranges. Thus,
 > with the provided additional figures I am now even more convinced that this
 > difference with distance from the host needs to be mentioned as a caveat in
 > the manuscript and I thus would like to re-iterate my request from point 4 of
 > the previous report.
 
 We have updated all the analysis in the paper and constrained it to 50-150 kpc to
-be closer to what is expected in cosmological simulations. We updated Figures:
-5-9 in the main text. We adjust the texts accordingly as highlighted in red. 
-In Figure 5 the changes are mainly in the density of poles, however, the distribution of
+be closer to what is expected in observational studies of the MW. We updated the relevant figures in 
+the main text (Figures 5 to 9) and in the Appendix (figures 13-16). 
+We adjusted the texts accordingly (highlighted in red) updating the discussion 
+for the studied distance range. Below we summarized the main changes: 
+
+- In Figure 5 the changes are mainly in the density of poles. The distribution of
 poles is still consistent with that from 50-300 kpc. This is because there are not that
 many DM particles in the outer halo. This is quantified further in Figure 6 where 
 the angular correlation function shows how the main changes occur at the 
-pericentric passages of the satellite. The main changes are that before in m12b (left panel)
+pericentric passages of the satellite. In the case of m12b (left panel)
 the correlation is higher at lower angular scales (<20 degrees), this was not the case
-when we were looking at distances beyond 150 kpc. Yet, the quantitavley the enhacement in the correlation function 
-are similar to the 300 kpc case as shown in Figure 7. The main changes we found where in 
-Figure 8 where the mean of the orbital poles change, but the overall trend is similar. The main difference is in
-the mean of the longitudinal orbital poles now reaches the maximum at the first pericenter. 
+when we were looking at distances beyond 150 kpc. Yet, quantitatively the enhancement in
+the correlation function is similar to the 300 kpc case as shown in Figure 7 for all halos, although 
+for m12b the enhancement is higher than when we look at distances within 300 kpc. 
+
+- The main changes we found were in Figure 8 where the mean of the orbital poles is sensitive to the
+chosen distance range. Within the 150 kpc range, we see that the longitudinal poles is closer to zero at t~ 6 Gyrs, but the mean starts to 
+decrease at t=8.6 Gyr when the satellite is at its pericenter. This is consistent with what we found within 300 kpc.
+Similarly, the magnitude and trend of the poles dispersion changes, especially for m12i, highlighting that these metrics depend 
+on the distance. But in the case of m12b, the trends remain similar showing that the effect of a massive satellite is seen across the entire outer halo.  
 
 
 > 2) Regarding the comparison to observed satellites, the results of Pawlowski et
 > al. (2022) for the observed satellites were found to be in line with those of
 > Correa Magnus & Vasiliev (2022). The latter study did backwards-orbit
-> integrations accounting for an LMC, which appears similar to the ongoing project
+> Integrations accounting for an LMC, which appears similar to the ongoing project
 > mentioned in the authors' reply. They write: "... if we "undo" the LMC
 > perturbation ... rewinding orbits in a time-dependent MW+LMC potential and then
-> bringing them back to present time in a static MW potential, the resulting
+> bringing them back to the present time in a static MW potential, the resulting
 > distribution of orbital poles does not significantly change ... and still
 > remains rather non-uniform; thus the LMC perturbation cannot be the main cause
 > of the orbital pole clustering (the same conclusion is independently reached by
@@ -50,7 +58,8 @@ the mean of the longitudinal orbital poles now reaches the maximum at the first 
 
 We agreed that this is an important clarification to make in the paper. We
 included a paragraph in Section 2 (highlighted in red within lines 232-246)
-clarifying the previous work done in the literature. 
+clarifying the previous work done in the literature. We have also added a paragraph 
+in section 6.3 and in the conclusions. 
 
 > 3) Regarding the tracers: yes, only relative changes are shown. However, a
 > concern is that there are additional relative effects at play in the particle
@@ -63,7 +72,7 @@ clarifying the previous work done in the literature.
 > particle-based results and interpretations on the level of satellite galaxies,
 >as requested in the previous report.
 
-TBD
+We agreed tidal disruption will add small-scale power. We added a caveat in the 
 
 > Additionally, the following question related to Fig. 4 from the previous report
 > has not been answered yet: Why is the outer halo velocity measured with
