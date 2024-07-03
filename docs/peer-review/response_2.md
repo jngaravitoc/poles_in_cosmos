@@ -72,10 +72,13 @@ in section 5.2.
 > particle-based results and interpretations on the level of satellite galaxies,
 >as requested in the previous report.
 
-We agreed tidal disruption will add small-scale power. We added a caveat in Section XX.
-However, we don’t expect to be strong and it should happen at all times. We see strong
-correlations with time. Even though there is, it is useful to look at the particles
-rather than satellites because of noise issues.
+We agreed tidal disruption will add small-scale power we have included such a caveat 
+in Section 5.3. However, we don’t expect to be a strong effect that will alter the conclusions of our
+work as tidal disruption happens at all times and mainly in 
+the inner regions of the galaxy. We see a strong correlation with the pericentric 
+passages that would be hard to explain by tidal disruption.
+We decided to do our analysis in particle data rather than satellites because of the 
+high noise in the analysis of the satellites.
 
 
 > Additionally, the following question related to Fig. 4 from the previous report
