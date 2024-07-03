@@ -59,7 +59,7 @@ on the distance. But in the case of m12b, the trends remain similar showing that
 We agreed that this is an important clarification to make in the paper. We
 included a paragraph in Section 2 (highlighted in red within lines 232-246)
 clarifying the previous work done in the literature. We have also added a paragraph 
-in section 6.3 and in the conclusions. 
+in section 5.2.
 
 > 3) Regarding the tracers: yes, only relative changes are shown. However, a
 > concern is that there are additional relative effects at play in the particle
@@ -72,7 +72,11 @@ in section 6.3 and in the conclusions.
 > particle-based results and interpretations on the level of satellite galaxies,
 >as requested in the previous report.
 
-We agreed tidal disruption will add small-scale power. We added a caveat in the 
+We agreed tidal disruption will add small-scale power. We added a caveat in Section XX.
+However, we don’t expect to be strong and it should happen at all times. We see strong
+correlations with time. Even though there is, it is useful to look at the particles
+rather than satellites because of noise issues.
+
 
 > Additionally, the following question related to Fig. 4 from the previous report
 > has not been answered yet: Why is the outer halo velocity measured with
