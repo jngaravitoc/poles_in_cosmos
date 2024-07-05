@@ -1,4 +1,5 @@
 We thank the referee for their thoughtful comments on the second version of our paper. 
+We also apologize for the late response, hopefully, this version of the paper has addressed all comments. 
 We agree with the comments the referee made and made changes in the paper accordingly, 
 these are highlighted in red. Below we elaborate more on the changes we made addressing 
 all the comments from the referee's report. 
@@ -86,7 +87,7 @@ high noise in the analysis of the satellites.
 > subhalos, not the particles? Doesn't this hinder comparability with the
 > idealized simulations which do not contain any subhalos?
 
-TBD
+We update Figure 4 including the COM computed from DM particles. Interestingly, there is no net motion at t=6 Gyrs as in the satellites. 
 
 > The labels of the simulations at the top of Fig. 5 got swapped. Also, the order
 > of simulations in the last two figures of the appendix are still different from
