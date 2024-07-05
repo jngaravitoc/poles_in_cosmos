@@ -1,8 +1,10 @@
-We thank the referee for their thoughtful comments on the second version of our paper. 
-We also apologize for the late response, hopefully, this version of the paper has addressed all comments. 
-We agree with the comments the referee made and made changes in the paper accordingly, 
-these are highlighted in red. Below we elaborate more on the changes we made addressing 
-all the comments from the referee's report. 
+We thank the referee for their thoughtful comments on the second version of our paper. We also 
+apologize for the late response; hopefully, this version of the paper has addressed all comments.
+We agree with the comments the referee made and made changes to the paper accordingly, 
+which are highlighted in red. In addition, we also updated the discussion of some of the recent paper in the field
+after discussions with their authors (these changes are also highlighted in red). Below, we elaborate
+ more on the changes we made to address
+all the comments from the referee's report.
 
 > 1) The distribution of orbital poles when restricting the distances to 150 kpc,
 > as shown in the figures the authors kindly included in their reply, are
@@ -18,27 +20,30 @@ all the comments from the referee's report.
 > the manuscript and I thus would like to re-iterate my request from point 4 of
 > the previous report.
 
-We have updated all the analysis in the paper and constrained it to 50-150 kpc to
-be closer to what is expected in observational studies of the MW. We updated the relevant figures in 
-the main text (Figures 5 to 9) and in the Appendix (figures 13-16). 
-We adjusted the texts accordingly (highlighted in red) updating the discussion 
-for the studied distance range. Below we summarized the main changes: 
+We have updated all the analysis in the paper and constrained it to 50-150 kpc 
+to align more closely with observational studies of the Milky Way. We have updated
+the relevant figures in the main text (Figures 5 to 9) and in the Appendix (Figures 13-16).
+We have adjusted the texts accordingly (highlighted in red), updating the discussion 
+for the studied distance range. Below, we summarize the main changes:
 
-- In Figure 5 the changes are mainly in the density of poles. The distribution of
-poles is still consistent with that from 50-300 kpc. This is because there are not that
-many DM particles in the outer halo. This is quantified further in Figure 6 where 
-the angular correlation function shows how the main changes occur at the 
-pericentric passages of the satellite. In the case of m12b (left panel)
-the correlation is higher at lower angular scales (<20 degrees), this was not the case
-when we were looking at distances beyond 150 kpc. Yet, quantitatively the enhancement in
-the correlation function is similar to the 300 kpc case as shown in Figure 7 for all halos, although 
-for m12b the enhancement is higher than when we look at distances within 300 kpc. 
+- In Figure 5, the changes mainly concern the density of poles. The distribution of
+  poles remains consistent with that from 50-300 kpc due to the limited number of DM
+  particles in the outer halo. This is quantified further in Figure 6, where the angular
+  correlation function shows changes occurring mainly at the pericentric passages of the
+  satellite. In the case of m12b (left panel), the correlation is higher at lower angular
+   scales (<20 degrees), contrasting with observations beyond 150 kpc. However,
+  quantitatively, the enhancement in the correlation function is similar to the 300 kpc case,
+  as shown in Figure 7 for all halos. Although for m12b, the enhancement is higher than
+  observed within 300 kpc.
 
-- The main changes we found were in Figure 8 where the mean of the orbital poles is sensitive to the
-chosen distance range. Within the 150 kpc range, we see that the longitudinal poles is closer to zero at t~ 6 Gyrs, but the mean starts to 
-decrease at t=8.6 Gyr when the satellite is at its pericenter. This is consistent with what we found within 300 kpc.
-Similarly, the magnitude and trend of the poles dispersion changes, especially for m12i, highlighting that these metrics depend 
-on the distance. But in the case of m12b, the trends remain similar showing that the effect of a massive satellite is seen across the entire outer halo.  
+- The main changes are evident in Figure 8, where the mean of the orbital poles is sensitive
+  to the chosen distance range. Within the 150 kpc range, we observe that the longitudinal
+  poles are closer to zero at t~ 6 Gyrs, but the mean begins to decrease at t=8.6 Gyr when the
+   satellite reaches its pericenter. This is consistent with our findings within 300 kpc. Similarly,
+  the magnitude and trend of the pole dispersion change, especially for m12i, highlighting that these
+   metrics depend on the distance. However, in the case of m12b, the trends remain similar,
+   indicating that the effect of a massive satellite is observable across the entire outer halo.
+
 
 
 > 2) Regarding the comparison to observed satellites, the results of Pawlowski et
@@ -73,13 +78,10 @@ in section 5.2.
 > particle-based results and interpretations on the level of satellite galaxies,
 >as requested in the previous report.
 
-We agreed tidal disruption will add small-scale power we have included such a caveat 
-in Section 5.3. However, we don’t expect to be a strong effect that will alter the conclusions of our
-work as tidal disruption happens at all times and mainly in 
-the inner regions of the galaxy. We see a strong correlation with the pericentric 
-passages that would be hard to explain by tidal disruption.
-We decided to do our analysis in particle data rather than satellites because of the 
-high noise in the analysis of the satellites.
+We agreed that this is an important clarification to make in the paper. We added a 
+paragraph in Section 5.3 (highlighted in red within lines 875). Tidal disruption would indeed
+be seen in the correlation at the smaller scales. Yet, the temporal changes shouldn't been 
+gradual and should not have been as strong at the pericentric passages of the satellite.
 
 
 > Additionally, the following question related to Fig. 4 from the previous report
@@ -87,7 +89,8 @@ high noise in the analysis of the satellites.
 > subhalos, not the particles? Doesn't this hinder comparability with the
 > idealized simulations which do not contain any subhalos?
 
-We update Figure 4 including the COM computed from DM particles. Interestingly, there is no net motion at t=6 Gyrs as in the satellites. 
+We update Figure 4 including the COM computed from DM particles. 
+Interestingly, there is no net motion at t=6 Gyrs as in the satellites. 
 
 > The labels of the simulations at the top of Fig. 5 got swapped. Also, the order
 > of simulations in the last two figures of the appendix are still different from
