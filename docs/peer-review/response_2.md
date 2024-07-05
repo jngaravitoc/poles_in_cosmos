@@ -80,7 +80,7 @@ in section 5.2.
 
 We agreed that this is an important clarification to make in the paper. We added a 
 paragraph in Section 5.3 (highlighted in red within lines 875). Tidal disruption would indeed
-be seen in the correlation at the smaller scales. Yet, the temporal changes shouldn't been 
+be seen in the correlation at the smaller scales. Yet, the temporal changes should be 
 gradual and should not have been as strong at the pericentric passages of the satellite.
 
 
