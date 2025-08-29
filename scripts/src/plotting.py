@@ -26,7 +26,7 @@ import pynbody
 from pynbody import filt
 import nba
 
-plt.style.use('../matplotlib.mplstyle')
+#plt.style.use('../matplotlib.mplstyle')
 plt.rcParams['font.size'] = 35
 
 def multipanel_plot(hf, hs, satellite_faceon, snap, sim, figname):

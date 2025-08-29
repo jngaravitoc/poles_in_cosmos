@@ -16,13 +16,13 @@ import sys
 import pynbody
 
 sys.path.append("/mnt/home/ecunningham/python")
-plt.style.use('~/matplotlib.mplstyle')
+###plt.style.use('~/matplotlib.mplstyle')
 
 import gizmo_analysis as ga
 import halo_analysis as halo
 import nba
 
-import pynbody_routines  as pr 
+Import pynbody_routines  as pr 
 import plotting as pl
 from io_gizmo_pynbody import FIRE
 import analysis as an

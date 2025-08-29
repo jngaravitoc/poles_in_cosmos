@@ -107,7 +107,7 @@ if __name__ == "__main__":
     #nbins = 60
     rmin=50
     rmax=150
-    sim='m12b'
+    sim='m12c'
     auto = False
     sats = True
     ptype = 'dark'
@@ -127,6 +127,7 @@ if __name__ == "__main__":
 
     data = FIRE(sim, remove_satellite=True)
     #data = FIRE(sim)
+    """
     subhalos = data.subhalos(snap_base)
     azys_subhalos = an.Analysis(rmin, rmax)
     lOP, bOP = azys_subhalos.poles_subhalos(subhalos, satellites=sats)
@@ -176,7 +177,7 @@ if __name__ == "__main__":
 
  
     print(np.nanmean(lsat), np.nanmean(bsat))
-
+    """
     hfaceon, hsideon = data.rotated_halo(snap_init)
 
     if ptype == 'dark':
@@ -193,11 +194,12 @@ if __name__ == "__main__":
 
     lpart, bpart = kin_part.orbpole()
     print("-> Computing correlation function")
+    print(type(bpart[0]))
     part_corr = an.Analysis(rmin, rmax)
-    bins, w0s = part_corr.compute_2d_corrf(lpart, bpart, np.array([np.nanmean(lsat)]), np.array([np.nanmean(bsat)]), nbins, nthreads)
-    bins, w0 = part_corr.compute_2d_corrf(lpart, bpart, np.array([0]), np.array([0]), nbins, nthreads)
+    #bins, w0s = part_corr.compute_2d_corrf(lpart, bpart, np.array([np.nanmean(lsat)]), np.array([np.nanmean(bsat)]), nbins, nthreads)
+    bins, w0 = part_corr.compute_2d_corrf(lpart, bpart, np.array([0]), np.array([0]), nbins=nbins, nthreads=nthreads)
     wmatrix[0] = w0
-    wmatrix_s[0] = w0s
+    #wmatrix_s[0] = w0s
     print("-> Done")
     
     #pl.multipanel_plot(hfaceon, hfaceon, subhalos, snap_init, sim, "{}_test".format(sim))
@@ -223,7 +225,7 @@ if __name__ == "__main__":
         part_corr = an.Analysis(rmin, rmax)
         #bins, w0s = part_corr.compute_2d_corrf(lpart, bpart, np.array([np.nanmean(lsat)]), np.array([np.nanmean(bsat)]), nbins, nthreads)
         bins, w0 = part_corr.compute_2d_corrf(lpart, bpart, np.array([0]), np.array([0]), nbins, nthreads)
-
+        print("# DONE")
         wmatrix[k-snap_init] = w0
         #wmatrix_s[k-snap_init] = w0s
 

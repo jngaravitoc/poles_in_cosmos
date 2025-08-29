@@ -48,7 +48,8 @@ if __name__ ==  "__main__":
     times = np.loadtxt(snap_times, usecols=3)
     m12i_nosat = fa.FIRE(sim, remove_satellite=True, rm_stellar_sat=True)
     m12i = fa.FIRE(sim)
-    rcut = 38
+    rcut = 50
+    mcut = 1e7
     m12i_op_disp = np.zeros(300)
     m12i_op_disp_nosat = np.zeros(300)
     m12i_op_disp_stars = np.zeros(300)
@@ -80,18 +81,18 @@ if __name__ ==  "__main__":
     for k in range(300, 600):
         sub_not_sat = m12i_nosat.subhalos(k)
         dsub_nosat = np.sqrt(np.sum(np.array(sub_not_sat.dark['pos'])**2, axis=1))
-        dcut_nosat = np.where((dsub_nosat<300) & (dsub_nosat>rcut) & (sub_not_sat.dark['mass']>1e8))[0]
+        dcut_nosat = np.where((dsub_nosat<300) & (dsub_nosat>rcut) & (sub_not_sat.dark['mass']>mcut))[0]
 
         dsub_nosat_stars = np.sqrt(np.sum(np.array(sub_not_sat.star['pos'])**2, axis=1))
-        dcut_nosat_stars = np.where((dsub_nosat_stars<300) & (dsub_nosat_stars>rcut) & (sub_not_sat.star['mass']>1e8))[0]
+        dcut_nosat_stars = np.where((dsub_nosat_stars<300) & (dsub_nosat_stars>rcut) & (sub_not_sat.star['mass']>0))[0]
 
 
 
         sub = m12i.subhalos(k)
         dsub = np.sqrt(np.sum(np.array(sub.dark['pos'])**2, axis=1))
-        dcut = np.where((dsub<300) & (dsub>rcut) & (sub.dark['mass']>1e8))[0]
+        dcut = np.where((dsub<300) & (dsub>rcut) & (sub.dark['mass']>mcut))[0]
         dsub_stars = np.sqrt(np.sum(np.array(sub.star['pos'])**2, axis=1))
-        dcut_stars = np.where((dsub_stars<300) & (dsub_stars>rcut) & (sub.star['mass']>1e8))[0]
+        dcut_stars = np.where((dsub_stars<300) & (dsub_stars>rcut) & (sub.star['mass']>0))[0]
 
         m12i_op_disp_nosat[k-300] = orbital_pole_dispersion(np.array(sub_not_sat.dark['pos'])[dcut_nosat], 
                                                             np.array(sub_not_sat.dark['vel'])[dcut_nosat])
@@ -137,7 +138,7 @@ if __name__ ==  "__main__":
     median_v_st = np.array([times[300:600], m12i_stellar_median_vx, m12i_stellar_median_vy, m12i_stellar_median_vz, m12i_stellar_std_vx,
                         m12i_stellar_std_vy, m12i_stellar_std_vz]).T
 
-    #np.savetxt("{}_op_analysis_mass1e8.txt".format(sim), results)
+    np.savetxt("{}_op_analysis_mass1e7.txt".format(sim), results)
     #np.savetxt("{}_op_median_vel_mass1e8.txt".format(sim), median_v)
-    np.savetxt("{}_op_median_pos_mass1e8.txt".format(sim), median_r)
-    np.savetxt("{}_op_median_vel_stellar_mass1e8.txt".format(sim), median_v_st)
+    #p.savetxt("{}_op_median_pos_mass1e8.txt".format(sim), median_r)
+    #p.savetxt("{}_op_median_vel_stellar_mass1e8.txt".format(sim), median_v_st)

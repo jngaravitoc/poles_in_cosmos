@@ -78,8 +78,8 @@ class Analysis:
 
     npoints = len(l)
     # Setup the bins
-    bins = np.linspace(0.1, 180.0, nbins + 1) # note the +1 to nbins
-
+    bins = np.linspace(1, 180, nbins + 1) # note the +1 to nbins
+    print(len(bins))
     if ((l2!=0) & (b2!=0)):
       autocorr=0
       DD_counts = DDtheta_mocks(autocorr, nthreads, bins,

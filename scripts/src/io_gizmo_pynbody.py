@@ -72,6 +72,7 @@ def return_tracked_pos(halo_tree, tr_ind_at_init, pynbody_halo=False, init_snap=
     tree_ind = tree_ind[positive]
     position = halo_tree['host.distance'][tree_ind]
     nsnaps = halo_tree['snapshot'][tree_ind]
+
     mass = halo_tree['mass'][tree_ind]
     velocity = halo_tree['host.velocity'][tree_ind]
     cat_ind = halo_tree['catalog.index'][tree_ind]
@@ -182,16 +183,16 @@ class FIRE:
         self.stars_ids = np.load(stars_path)
     
     elif sim == 'm12f':
-        sat_path = '../data/m12_satellite_indices/m12f/dm_particle_inds.npy'
+        sat_path = '../data/m12_satellite_indices/m12f/dm_inds.npy'
         stars_path = '../data/m12_satellite_indices/m12f/z0_stream_inds.npy'
         self.stars_ids = np.load(stars_path)
         self.sat_ids = np.load(sat_path) 
 
     elif sim == 'm12b':
-        sat_path = '../data/m12_satellite_indices/m12b/dm_inds.npy'
+        sat_path = '../../data/m12_satellite_indices/m12b/dm_inds.npy'
         subs_path = '/mnt/home/nico/ceph/FIRE/{}_385_unbound_dark_indices.npy'.format(sim)
         self.subs_ids = np.load(subs_path)
-        stars_path = '../data/m12_satellite_indices/m12b/new_z0_inds.npy'
+        stars_path = '../../data/m12_satellite_indices/m12b/new_z0_inds.npy'
         self.stars_ids = np.load(stars_path)
         self.sat_ids = np.load(sat_path) 
 

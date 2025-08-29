@@ -26,16 +26,13 @@ Dependencies:
 Author: Nico Garavito-Camargo
 Github: jngaravitoc
 
-Usage: 
-python vr_mollweide_movies.py sim init_snap final_snap  bmin bmax plot_type rmin rmax rotate remove_satellite
-
-sim : str
-    Defines which latte simulation to use. This could be: m12b, m12c, m12f, m12i, m12m, m12r, m12w
-init_snap : int
-final_snap : int
-
+TODO:
+- Remove satellite subhalos
 
 """
+
+#!/usr/bin/env python
+# coding: utf-8
 
 
 import numpy as np
@@ -44,7 +41,8 @@ from astropy import units as u
 import sys
 import pynbody
 
-plt.style.use('../matplotlib.mplstyle')
+sys.path.append("/mnt/home/ecunningham/python")
+#plt.style.use('~/matplotlib.mplstyle')
 import gizmo_analysis as ga
 import halo_analysis as halo
 import nba
@@ -68,37 +66,36 @@ if __name__ == "__main__":
     snap_init = int(sys.argv[2])
     snap_final = int(sys.argv[3])
     ptype = sys.argv[4]
-    bmin = float(sys.argv[5])
-    bmax = float(sys.argv[6])
-    plot_type = sys.argv[7]
+    #bmin = float(sys.argv[5])
+    #bmax = float(sys.argv[6])
     sats = False
-    rmin = 50 
-    rmax = 150
+    rmin = 50
+    rmax = 300
     rotate = True
-    remove_satellite_dm = True
-    remove_satellite_stars = True
+    remove_satellite = True
 
     snap_times = '/mnt/ceph/users/firesims/fire2/metaldiff/{}_res7100/snapshot_times.txt'.format(sim)
     times = np.loadtxt(snap_times, usecols=3)
     #plot_type = 'cartesian_projection' # vr_mollweide, orbital_poles 
     #plot_type = 'vr_mollweide'#, orbital_poles 
-    #plot_type = 'poles_mollweide' 
+    plot_type = 'poles_mollweide' 
     
-    m12 = FIRE(sim, remove_satellite=remove_satellite_dm, rm_stellar_sat=remove_satellite_stars)
+    #m12 = FIRE(sim)
+    m12 = FIRE(sim, remove_satellite=remove_satellite, rm_stellar_sat=True)
 
     for k in range(snap_init, snap_final, 1):
         subhalos_faceon, satellite_faceon = m12.subhalos_rotated(k)
         #subhalos_satellites = m12.subhalos(k)
-        
+        """
         f = 1* (u.km/u.s).to(u.kpc/u.Gyr)
 
         if ptype == 'star': 
             # face on particle data halo
-            hfaceon, hsideon = m12.rotated_halo(k)
+            hfaceon = m12.rotated_halo(k)
             pos = hfaceon.star['pos']
             vel = hfaceon.star['vel']*f
         elif ptype == 'dark':
-            hfaceon, hsideon = m12.rotated_halo(k, rotate=rotate)
+            hfaceon = m12.rotated_halo(k, rotate=rotate)
             pos = hfaceon.dark['pos']
             vel = hfaceon.dark['vel']*f
         elif ptype == 'subhalos':
@@ -110,14 +107,15 @@ if __name__ == "__main__":
         dist = np.sqrt(np.sum(pos**2, axis=1))
 
         dist_cut1 = np.where((dist > rmin) & (dist< rmax)) 
+        #dist_cut2 = np.where((dist> 300) & (dist< 600)) 
         
-        # Kinematics of all particles, it could be DM or stars
-        kinematics1 = nba.kinematics.Kinematics(pos[dist_cut1], vel[dist_cut1])
+
+        kinematics1 = nba.kinematics.Kinematics(pos[dist_cut1],  vel[dist_cut1])
+        #kinematics2 = nba.kinematics.Kinematics(pos[dist_cut2],  vel[dist_cut2])
         
-        ## Satellite 
+        
         kin_sat = nba.kinematics.Kinematics(subhalos_faceon.dark['pos'], subhalos_faceon.dark['vel']*f)
         lsat, bsat = kin_sat.pos_cartesian_to_galactic()
-
         mdark_sat = subhalos_faceon.dark['mass']
         sort_mass = np.sort(mdark_sat)
         pos_sat = np.sqrt(np.sum(subhalos_faceon.dark['pos']**2, axis=1))
@@ -127,9 +125,7 @@ if __name__ == "__main__":
         sat_pop3 = np.where((pos_sat>20) & (pos_sat<300) & (mdark_sat>8e8))
         print(len(sat_pop1[0]), len(sat_pop2[0]), len(sat_pop3[0]))
         
-        # Main Satellite
         kin_ms = nba.kinematics.Kinematics(satellite_faceon.dark['pos'], satellite_faceon.dark['vel']*f)
-        
         if plot_type == "vr_mollweide":        
             pos_galactic = kinematics1.pos_cartesian_to_galactic()
             vel_galactic = kinematics1.vel_cartesian_to_galactic()
@@ -160,8 +156,8 @@ if __name__ == "__main__":
             #pl.mollweide_projection(pos_galactic2[0]*180/np.pi, pos_galactic2[1]*180/np.pi, lsat[:k-snap_init]*180/np.pi, bsat[:k-snap_init]*180/np.pi, title=fig_title, bmin=-50, bmax=50, nside=40, smooth=1, q=vel_galactic2[0], figname=figname1)
 
         elif plot_type == "cartesian_projection":
-            figname = "../plots/exploration/{}_DM_stars_projection_satellite_{}".format(sim, remove_satellite_dm)
-            pl.multipanel_plot(hfaceon, hsideon, satellite_faceon, k, sim, figname)
+            figname = "../plots/exploration/{}_DM_stars_projection_300_600".format(sim, k)
+            pl.multipanel_plot(hfaceon, hfaceon, satellite_faceon, k, sim, figname)
 
         elif plot_type == 'rho_mollweide':
             figname = "../plots/exploration/{}_rho_{}_faceon_{:03d}.png".format(sim, ptype, k)
@@ -174,7 +170,7 @@ if __name__ == "__main__":
                                     title=fig_title, bmin=500, bmax=1000, nside=40, smooth=5, figname=figname)
         
         elif plot_type == "poles_mollweide":
-            figname = "../plots/exploration/outer_150_{}_OP_{}_faceon_sat_off_{:03d}.png".format(sim, ptype, k)
+            figname = "../plots/exploration/outer_{}_OP_{}_faceon_sat_{:03d}.png".format(sim, ptype, k)
             fig_title = "{} {}-{} kpc; t={:.2f} Gyr".format(sim, rmin, rmax, times[k])
             opl, opb = kinematics1.orbpole()
             opl_sat, opb_sat = kin_sat.orbpole()
@@ -185,3 +181,4 @@ if __name__ == "__main__":
                                     l3=opl_sat[sat_pop3], b3=opb_sat[sat_pop3],
                                     l4=opl_ms[snap_init-300], b4=opb_ms[snap_init-300],
                                     title=fig_title, bmin=bmin, bmax=bmax, nside=40, smooth=1, figname=figname, cmap='Greys')
+         """
