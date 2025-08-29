@@ -24,8 +24,7 @@ import nba
 import healpy as hp
 from healpy.newvisufunc import projview, newprojplot
 
-sys.path.append("/mnt/home/ecunningham/python")
-plt.style.use('~/matplotlib.mplstyle')
+plt.style.use('../../matplotlib.mplstyle')
 
     
 def multipanel_plot(hf, satellite_faceon, snap, sim, figname):
@@ -132,7 +131,7 @@ def mollweide_projection(l, b, l2, b2, title, bmin, bmax, nside, smooth, **kwarg
       coord=["G"],
       graticule=True,
       graticule_labels=True,
-      rot=(0, 0, 0),
+      rot=(0, 120, 0),
       unit=" ",
       xlabel="Galactic Longitude (l) ",
       ylabel="Galactic Latitude (b)",

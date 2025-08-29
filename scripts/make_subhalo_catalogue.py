@@ -62,10 +62,10 @@ if __name__ == "__main__":
     #rm_sat = False
 
     if bool(rm_sat) == False:
-        cat_name = '{}_all_rotated_subhalo_cat.h5py'.format(sim)
+        cat_name = '{}_all_rotated_subhalo_cat2.h5py'.format(sim)
         print("Building catalogue without satellite's subhalos")
     elif bool(rm_sat) == True:
-        cat_name = '{}_rotated_subhalo_cat.h5py'.format(sim)
+        cat_name = '{}_rotated_subhalo_cat2.h5py'.format(sim)
         print("Building catalogue with satellite's subhalos")
 
     hf = h5py.File(cat_name, 'w')

@@ -3,9 +3,10 @@
 #python ./src/vr_mollweide_movies.py m12r 520 521 dark 100 1000 &
 
 
-#python ./src/vr_mollweide_movies.py m12b 300 301 dark 100 1000 &
-#python ./src/vr_mollweide_movies.py m12b 386 387 dark 100 1000 &
-#python ./src/vr_mollweide_movies.py m12b 440 441 dark 100 1000 &
+#python ./src/vr_mollweide_movies.py m12b 328 360 dark 100 1000 &
+#python ./src/vr_mollweide_movies.py m12b 360 400 dark 100 1000 &
+#python ./src/vr_mollweide_movies.py m12b 386 387 dark 100 500 &
+#python ./src/vr_mollweide_movies.py m12b 440 441 dark 100 500 &
 
 
 #python ./src/vr_mollweide_movies.py m12f 300 301 dark 100 1000 &
@@ -14,7 +15,12 @@
 #python ./src/vr_mollweide_movies.py m12f 500 501 dark 100 1000 & 
 
 
-#python ./src/vr_mollweide_movies.py m12i 300 301 dark 100 1000 & 
+python ./src/vr_mollweide_movies.py m12i 300 600 dark 100 1000 & 
+#python ./src/vr_mollweide_movies.py m12i 350 400 dark 100 1000 & 
+#python ./src/vr_mollweide_movies.py m12i 400 450 dark 100 1000 & 
+#python ./src/vr_mollweide_movies.py m12i 450 500 dark 100 1000 & 
+#python ./src/vr_mollweide_movies.py m12i 500 550 dark 100 1000 & 
+#python ./src/vr_mollweide_movies.py m12i 550 600 dark 100 1000 & 
 #python ./src/vr_mollweide_movies.py m12i 350 351 dark 100 1000 & 
 #python ./src/vr_mollweide_movies.py m12i 450 451 dark 100 1000 & 
 
@@ -46,7 +52,7 @@
 #python ./src/vr_mollweide_movies.py m12f 300 301 star 0 10 &
 #python ./src/vr_mollweide_movies.py m12f 386 387 star 0 10 & 
 #python ./src/vr_mollweide_movies.py m12f 440 441 star 0 10 & 
-python ./src/vr_mollweide_movies.py m12f 470 471 star 0 10 & 
+#python ./src/vr_mollweide_movies.py m12f 470 471 star 0 10 & 
 
 
 #python ./src/vr_mollweide_movies.py m12i 300 301 star 0 8 & 
